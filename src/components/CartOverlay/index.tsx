@@ -22,7 +22,7 @@ class CartOverlay extends Component<{ cartItems: CartItem[] }> {
                 {cartItem.product.prices[0].amount}
               </p>
             </div>
-
+            {/* teste */}
             <div className="quantity">
               <svg
                 width="24"
