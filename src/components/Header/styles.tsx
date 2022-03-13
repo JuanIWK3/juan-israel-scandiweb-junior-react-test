@@ -8,6 +8,7 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   margin-bottom: 80px;
+  z-index: 2;
 
   .wrapper {
     display: flex;
@@ -52,18 +53,5 @@ export const Container = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-
-    .currency,
-    .cart {
-      padding: 0 11px;
-      cursor: pointer;
-
-      svg {
-        margin-top: 5px;
-      }
-    }
-    .cart {
-      padding: 5px 20px;
-    }
   }
 `;

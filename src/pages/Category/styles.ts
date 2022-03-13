@@ -7,6 +7,15 @@ export const Container = styled.div`
   justify-content: center;
   width: 100%;
 
+  .dim-overlay {
+    background: rgba(57, 55, 72, 0.22);
+    position: absolute;
+    top: 80px;
+    width: 100vw;
+    height: 100%;
+    z-index: 1;
+  }
+
   .products {
     margin-top: 100px;
     display: grid;

@@ -1,5 +1,5 @@
 import React from "react";
-
+import Header from "../../components/Header";
 import { Product, CategoryElement, CartItem } from "../../interfaces";
 import { Container } from "./styles";
 
@@ -41,16 +41,35 @@ export default class Category extends React.Component {
   state = {
     categories: [] as Array<{ name: string; products: Product[] }>,
     cartItems: [] as CartItem[],
+    overlayVisible: false,
+    toggleCartOverlay: () => {
+      this.setState({ overlayVisible: !this.state.overlayVisible });
+    },
     addToCart: (product: Product) => {
-      this.state.cartItems.push({ product: product, quantity: 1 });
+      let tempCartItems = this.state.cartItems;
 
-      localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
+      if (tempCartItems.length === 0) {
+        tempCartItems.push({ product: product, quantity: 1 });
+        this.setState({ cartItems: tempCartItems });
+
+        return;
+      }
+
+      for (let i = 0; i < tempCartItems.length; i++) {
+        if (tempCartItems[i].product.id === product.id) {
+          tempCartItems[i].quantity += 1;
+          this.setState({ cartItems: tempCartItems });
+
+          return;
+        }
+      }
+
+      tempCartItems.push({ product: product, quantity: 1 });
+      this.setState({ cartItems: tempCartItems });
+
+      return;
     },
   };
-
-  constructor(props: any) {
-    super(props);
-  }
 
   componentDidMount() {
     fetch(
@@ -65,6 +84,11 @@ export default class Category extends React.Component {
   render() {
     return (
       <Container>
+        <Header
+          toggle={this.state.toggleCartOverlay as () => {}}
+          cartItems={this.state.cartItems}
+        />
+        {this.state.overlayVisible && <div className="dim-overlay"></div>}
         {this.state.categories.map((category) => {
           return (
             <div className="category" key={category.name}>
