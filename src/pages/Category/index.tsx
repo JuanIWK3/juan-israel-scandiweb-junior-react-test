@@ -67,7 +67,9 @@ export default class Category extends React.Component {
                 {category.products.map((product) => {
                   return (
                     <div className="product" key={product.id}>
-                      <figure>
+                      <figure
+                        className={!product.inStock ? "out-of-stock" : ""}
+                      >
                         {!product.inStock && (
                           <div className="out-of-stock">OUT OF STOCK</div>
                         )}

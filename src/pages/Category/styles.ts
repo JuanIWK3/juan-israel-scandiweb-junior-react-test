@@ -56,6 +56,10 @@ export const Container = styled.div`
         box-shadow: 0px 4px 35px rgba(168, 172, 176, 0.19);
 
         figure {
+          &.out-of-stock {
+            cursor: default;
+          }
+
           .circle {
             display: flex;
           }
@@ -69,6 +73,13 @@ export const Container = styled.div`
         text-align: center;
         margin-bottom: 0;
         position: relative;
+
+        &.out-of-stock {
+          cursor: default;
+          .circle {
+            cursor: default;
+          }
+        }
 
         .out-of-stock {
           display: flex;
@@ -104,7 +115,7 @@ export const Container = styled.div`
           align-items: center;
           justify-content: center;
           display: none;
-
+          z-index: 1;
           cursor: pointer;
         }
       }
