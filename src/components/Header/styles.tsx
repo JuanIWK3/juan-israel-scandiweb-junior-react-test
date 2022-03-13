@@ -36,7 +36,8 @@ export const Container = styled.div`
       padding: 0 16px;
       background: transparent;
       border: none;
-
+      font-family: "Raleway", serif;
+      font-size: 16px;
       &.active {
         border-bottom: 2px solid #5ece7b;
       }

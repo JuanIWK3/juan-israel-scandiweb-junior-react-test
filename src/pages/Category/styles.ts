@@ -7,11 +7,20 @@ export const Container = styled.div`
   justify-content: center;
   width: 100%;
 
+  .category {
+    margin-bottom: 100px;
+  }
+
+  .category-name {
+    font-size: 42px;
+    font-weight: 400;
+  }
+
   .dim-overlay {
     background: rgba(57, 55, 72, 0.22);
-    position: absolute;
-    top: 80px;
-    width: 100vw;
+    position: fixed;
+    top: 0px;
+    width: 100%;
     height: 100%;
     z-index: 1;
   }
@@ -60,6 +69,21 @@ export const Container = styled.div`
         text-align: center;
         margin-bottom: 0;
         position: relative;
+
+        .out-of-stock {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(255, 255, 255, 0.3);
+          position: absolute;
+          left: 0;
+          top: 0;
+          z-index: 1;
+          color: #8d8f9a;
+          font-size: 24px;
+        }
 
         .product-image {
           height: 338px;
