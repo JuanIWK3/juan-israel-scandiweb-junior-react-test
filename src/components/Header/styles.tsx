@@ -48,6 +48,7 @@ export const Container = styled.div`
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+    min-width: 32px;
   }
 
   .currency-cart {

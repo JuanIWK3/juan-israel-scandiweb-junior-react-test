@@ -48,10 +48,14 @@ export const Container = styled.div`
 
         .images-list {
           flex-direction: column;
-          width: max-content;
+          max-height: 510px;
+          flex-wrap: wrap;
+          overflow: auto;
+
           .image {
             width: 80px;
             height: 80px;
+            margin-bottom: 40px;
           }
         }
 
@@ -77,6 +81,13 @@ export const Container = styled.div`
     }
     @media (min-width: 1800px) {
       width: 1664px;
+      .gallery {
+        .selected-image {
+          width: 732px;
+          height: 612px;
+          margin-left: 250px;
+        }
+      }
     }
   }
 
@@ -85,10 +96,10 @@ export const Container = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
     .images-list {
       display: flex;
       flex-direction: row;
-      width: 200px;
       overflow: auto;
 
       .image {
@@ -131,28 +142,19 @@ export const Container = styled.div`
         margin-bottom: 8px;
 
         .attr-name {
+          display: flex;
           font-family: Roboto;
           font-weight: 700;
           margin-bottom: 8px;
+
+          .selected-value {
+            font-weight: 400;
+          }
         }
 
         .attr-values {
           display: flex;
           flex-wrap: wrap;
-          .attr-value {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 63px;
-            height: 45px;
-
-            margin-right: 12px;
-            margin-bottom: 12px;
-
-            border: 1px solid #1d1f22;
-            font-family: Source Sans Pro;
-            font-size: 16px;
-          }
 
           .attr-value:last-child {
             margin-bottom: 0;
@@ -188,13 +190,46 @@ export const Container = styled.div`
       cursor: pointer;
       font-size: 16px;
       font-weight: 600;
+
+      &.out-of-stock {
+        background-color: #ccc;
+        cursor: default;
+      }
     }
 
     .description {
+      max-height: 103px;
       font-size: 16px;
       font-family: Roboto;
       font-weight: 400;
       line-height: 25.59px;
+      overflow: auto;
     }
+  }
+`;
+
+export const AttrButton = styled.button`
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 63px;
+  height: 45px;
+  text-align: center;
+
+  margin-right: 12px;
+  margin-bottom: 12px;
+
+  border: 1px solid #ccc;
+  font-family: Source Sans Pro;
+  font-size: 16px;
+  cursor: pointer;
+
+  &.selected {
+    border: 1px solid #111;
+  }
+
+  &.swatch {
+    background: ${(props: { attrColor: string }) => props.attrColor};
   }
 `;

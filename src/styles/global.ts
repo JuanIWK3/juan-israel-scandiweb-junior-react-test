@@ -5,9 +5,11 @@ export default createGlobalStyle`
   padding: 0;
   box-sizing: border-box;
   font-family: Raleway, sans-serif;
+  text-decoration: none;
 }
 body {
   min-height: 100vh;
+  color: #000;
 }
 
 

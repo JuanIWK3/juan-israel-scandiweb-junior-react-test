@@ -51,15 +51,12 @@ export const Container = styled.div`
       width: 386px;
       height: 444px;
       transition: all 0.2s ease-in-out;
+      color: #000;
 
       &:hover {
         box-shadow: 0px 4px 35px rgba(168, 172, 176, 0.19);
 
         figure {
-          &.out-of-stock {
-            cursor: default;
-          }
-
           .circle {
             display: flex;
           }
@@ -75,7 +72,6 @@ export const Container = styled.div`
         position: relative;
 
         &.out-of-stock {
-          cursor: default;
           .circle {
             cursor: default;
           }
@@ -94,6 +90,7 @@ export const Container = styled.div`
           z-index: 1;
           color: #8d8f9a;
           font-size: 24px;
+          cursor: pointer;
         }
 
         .product-image {
@@ -125,9 +122,19 @@ export const Container = styled.div`
         height: 58px;
         padding: 16px;
 
-        p {
+        .name {
           margin: 0;
           line-height: 28.8px;
+          font-family: Raleway;
+          font-size: 18px;
+          font-weight: 300;
+        }
+        .price {
+          margin: 0;
+          line-height: 28.8px;
+          font-family: Raleway;
+          font-size: 18px;
+          font-weight: 500;
         }
       }
     }

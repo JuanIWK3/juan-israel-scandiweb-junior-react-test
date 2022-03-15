@@ -1,9 +1,8 @@
 import React from "react";
-import { cartLightImg } from "../../assets";
 import Header from "../../components/Header";
-import { Product, CartItem } from "../../interfaces";
-import { CATEGORY_QUERY, productQuery } from "../../queries";
-import { Container } from "./styles";
+import { CartItem } from "../../interfaces";
+import { productQuery } from "../../queries";
+import { AttrButton, Container } from "./styles";
 
 export default class ProductPage extends React.Component {
   state = {
@@ -44,10 +43,13 @@ export default class ProductPage extends React.Component {
     toggleCartOverlay: () => {
       this.setState({ overlayVisible: !this.state.overlayVisible });
     },
+    selectedImage: "",
+    selectedColor: "Select a color",
   };
 
   async componentDidMount() {
     const params = window.location.pathname.split("/")[2];
+    const description = document.querySelector(".description");
     await fetch(
       "http://localhost:4000?" +
         new URLSearchParams({ query: productQuery(params) })
@@ -55,14 +57,19 @@ export default class ProductPage extends React.Component {
       .then((res) => res.json())
       .then((res) => {
         this.setState({ product: res.data.product });
+        this.setState({ selectedImage: this.state.product.gallery[0] });
+        if (description) {
+          description.innerHTML = this.state.product.description;
+        }
       });
+
     console.log(this.state.product);
   }
 
   render() {
-    const description = this.state.product.description
-      ?.replace("<p>", "")
-      .replace("</p>", "");
+    // const description = this.state.product.description
+    //   ?.replace("<p>", "")
+    //   .replace("</p>", "");
 
     return (
       <Container>
@@ -97,12 +104,40 @@ export default class ProductPage extends React.Component {
             <div className="options">
               {this.state.product.attributes.map((attribute) => {
                 return (
-                  <div className={"attr " + attribute.type}>
-                    <div className="attr-name">{attribute.name}:</div>
+                  <div
+                    key={attribute.name}
+                    className={"attr " + attribute.type}
+                  >
+                    <div className="attr-name">
+                      <p>{attribute.name}</p>
+                      {attribute.type == "swatch" && (
+                        <p className="selected-value">
+                          {" "}
+                          {`: ${this.state.selectedColor}`}
+                        </p>
+                      )}
+                    </div>
                     <div className="attr-values">
-                      {attribute.items.map((item) => {
+                      {attribute.items.map((item, index) => {
                         return (
-                          <div className="attr-value">{item.displayValue}</div>
+                          <AttrButton
+                            attrColor={item.value}
+                            key={index}
+                            onClick={() => {
+                              this.setState({
+                                selectedColor: item.displayValue,
+                              });
+                            }}
+                            className={
+                              attribute.type == "swatch"
+                                ? "attr-value swatch"
+                                : "attr-value"
+                            }
+                          >
+                            {attribute.type !== "swatch" && (
+                              <div>{item.displayValue}</div>
+                            )}
+                          </AttrButton>
                         );
                       })}
                     </div>
@@ -117,8 +152,16 @@ export default class ProductPage extends React.Component {
                 {this.state.product.prices[0].amount}
               </div>
             </div>
-            <button className="add-to-cart">ADD TO CART</button>
-            <div className="description">{description}</div>
+            <button
+              className={
+                this.state.product.inStock
+                  ? "add-to-cart"
+                  : "add-to-cart out-of-stock"
+              }
+            >
+              {this.state.product.inStock ? "Add to Cart" : "OUT OF STOCK"}
+            </button>
+            <div className="description">{this.state.product.description}</div>
           </div>
         </main>
       </Container>

@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+
 import { cartLightImg } from "../../assets";
 import Header from "../../components/Header";
 import { Product, CartItem } from "../../interfaces";
@@ -71,31 +73,39 @@ export default class Category extends React.Component {
                         className={!product.inStock ? "out-of-stock" : ""}
                       >
                         {!product.inStock && (
-                          <div className="out-of-stock">OUT OF STOCK</div>
+                          <Link to={`/products/${product.id}`}>
+                            <div className="out-of-stock">OUT OF STOCK</div>
+                          </Link>
                         )}
                         <div
                           className="circle"
                           onClick={() => {
-                            this.state.addToCart(product);
+                            if (product.inStock) {
+                              this.state.addToCart(product);
+                            }
                           }}
                         >
                           <img src={cartLightImg} alt="" />
                         </div>
-                        <div
-                          className="product-image"
-                          style={{
-                            backgroundImage: `url(${product.gallery[0]}`,
-                          }}
-                        ></div>
+                        <Link to={`/products/${product.id}`}>
+                          <div
+                            className="product-image"
+                            style={{
+                              backgroundImage: `url(${product.gallery[0]}`,
+                            }}
+                          ></div>
+                        </Link>
                       </figure>
-                      <div className="content">
-                        <p>{product.name}</p>
-                        {product.id}
-                        <p>
-                          {product.prices[0].currency.symbol}
-                          {product.prices[0].amount}
-                        </p>
-                      </div>
+                      <Link to={`/products/${product.id}`}>
+                        <div className="content">
+                          <p className="name">{product.name}</p>
+
+                          <p className="price">
+                            {product.prices[0].currency.symbol}
+                            {product.prices[0].amount}
+                          </p>
+                        </div>
+                      </Link>
                     </div>
                   );
                 })}

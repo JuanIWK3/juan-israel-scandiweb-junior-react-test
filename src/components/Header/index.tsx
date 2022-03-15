@@ -5,6 +5,7 @@ import CartOverlay from "../CartOverlay";
 import { Container } from "./styles";
 
 import { logoImg, cartImg, currencyImg } from "../../assets";
+import { Link } from "react-router-dom";
 
 class index extends Component<{ cartItems: CartItem[]; toggle: () => {} }> {
   state = {
@@ -24,7 +25,9 @@ class index extends Component<{ cartItems: CartItem[]; toggle: () => {} }> {
           </div>
 
           <div className="logo">
-            <img src={logoImg} alt="" />
+            <Link to="/">
+              <img src={logoImg} alt="" />
+            </Link>
           </div>
 
           <div className="currency-cart">
