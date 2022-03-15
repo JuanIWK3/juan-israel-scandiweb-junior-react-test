@@ -66,3 +66,12 @@ export const productQuery = (productId: string) => {
 
   return PRODUCT_QUERY;
 };
+
+export const CURRENCY_QUERY = `
+{
+  currencies {
+    label
+    symbol
+  }
+}
+`;

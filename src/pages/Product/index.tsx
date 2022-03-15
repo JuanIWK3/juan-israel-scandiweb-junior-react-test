@@ -44,7 +44,8 @@ export default class ProductPage extends React.Component {
       this.setState({ overlayVisible: !this.state.overlayVisible });
     },
     selectedImage: "",
-    selectedColor: "Select a color",
+    selectedColor: "Select",
+    selectedCapacity: "Select",
   };
 
   async componentDidMount() {
@@ -62,8 +63,6 @@ export default class ProductPage extends React.Component {
           description.innerHTML = this.state.product.description;
         }
       });
-
-    console.log(this.state.product);
   }
 
   render() {
@@ -110,10 +109,16 @@ export default class ProductPage extends React.Component {
                   >
                     <div className="attr-name">
                       <p>{attribute.name}</p>
-                      {attribute.type == "swatch" && (
+                      {attribute.name == "Color" && (
                         <p className="selected-value">
                           {" "}
                           {`: ${this.state.selectedColor}`}
+                        </p>
+                      )}
+                      {attribute.name == "Capacity" && (
+                        <p className="selected-value">
+                          {" "}
+                          {`: ${this.state.selectedCapacity}`}
                         </p>
                       )}
                     </div>
@@ -124,9 +129,18 @@ export default class ProductPage extends React.Component {
                             attrColor={item.value}
                             key={index}
                             onClick={() => {
-                              this.setState({
-                                selectedColor: item.displayValue,
-                              });
+                              switch (attribute.name) {
+                                case "Color":
+                                  this.setState({
+                                    selectedColor: item.displayValue,
+                                  });
+                                  break;
+                                case "Capacity":
+                                  this.setState({
+                                    selectedCapacity: item.displayValue,
+                                  });
+                                  break;
+                              }
                             }}
                             className={
                               attribute.type == "swatch"

@@ -55,5 +55,35 @@ export const Container = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+
+    .currency {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      img {
+        margin-left: 8px;
+      }
+      .currency-menu {
+        appearance: none;
+        position: absolute;
+        top: 80px;
+        background-color: #fff;
+        box-shadow: 0px 0px 40px 0px #ccc;
+
+        .currency {
+          width: 100%;
+          padding-left: 20px;
+          padding-right: 40px;
+
+          &:hover {
+            background: #ddd;
+          }
+          p {
+            margin: 21px 4px;
+          }
+        }
+      }
+    }
   }
 `;
