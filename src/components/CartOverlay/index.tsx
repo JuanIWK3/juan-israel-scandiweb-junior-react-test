@@ -1,26 +1,38 @@
 import React, { Component } from "react";
-import { cartImg } from "../../assets";
+import { Link } from "react-router-dom";
+import { cartImg, minusImg, plusImg } from "../../assets";
 import { CartItem } from "../../interfaces";
 
-import { Container } from "./styles";
+import { Badge, Container, Icon } from "./styles";
 
 class CartOverlay extends Component<{
   cartItems: CartItem[];
-  toggle: () => {};
+  toggleDim: () => {};
+  currencyOpen: boolean;
+  toggleCurrency: () => void;
 }> {
   state = {
-    cartItems: this.props.cartItems,
+    total: "",
+    calculateTotal: () => {
+      let sum = 0;
+      for (let i = 0; i < this.props.cartItems.length; i++) {
+        sum += this.props.cartItems[i].product.prices[0].amount;
+      }
+      return `${this.props.cartItems[0].product.prices[0].currency.symbol} ${sum}`;
+    },
     increment: (index: number) => {
       this.setState({
-        cartItem: [this.state.cartItems[index].quantity++],
+        cartItem: [this.props.cartItems[index].quantity++],
       });
+      localStorage.setItem("cartItems", JSON.stringify(this.props.cartItems));
     },
     decrement: (index: number) => {
-      let tempCartItems = this.state.cartItems;
+      let tempCartItems = this.props.cartItems;
 
       if (tempCartItems[index].quantity === 1) {
         tempCartItems.splice(index, 1);
         this.setState({ cartItems: tempCartItems });
+        localStorage.setItem("cartItems", JSON.stringify(this.props.cartItems));
 
         return;
       }
@@ -28,33 +40,53 @@ class CartOverlay extends Component<{
       tempCartItems[index].quantity--;
 
       this.setState({ cartItems: tempCartItems });
+      localStorage.setItem("cartItems", JSON.stringify(this.props.cartItems));
     },
     overlayVisible: false,
     toggleCartOverlay: () => {
+      if (!this.state.overlayVisible && this.props.currencyOpen) {
+        this.props.toggleCurrency();
+      }
       this.setState({ overlayVisible: !this.state.overlayVisible });
     },
   };
 
+  componentDidMount() {
+    this.setState({ total: this.state.calculateTotal() });
+  }
+
+  componentDidUpdate() {
+    if (this.state.overlayVisible && this.props.currencyOpen) {
+      this.state.toggleCartOverlay();
+      this.props.toggleDim();
+    }
+  }
+
   render() {
     return (
       <div style={{ position: "relative" }}>
-        <img
-          style={{ cursor: "pointer", padding: "5px 11px", zIndex: 2 }}
-          onClick={() => {
-            this.props.toggle();
-            this.state.toggleCartOverlay();
-          }}
-          src={cartImg}
-          alt=""
-        />
+        <Icon>
+          <Badge>
+            <div>{this.props.cartItems.length}</div>
+          </Badge>
+          <img
+            style={{ cursor: "pointer", padding: "5px 11px", zIndex: 2 }}
+            onClick={() => {
+              this.props.toggleDim();
+              this.state.toggleCartOverlay();
+            }}
+            src={cartImg}
+            alt=""
+          />
+        </Icon>
         {this.state.overlayVisible && (
           <>
             <Container>
               <p className="title">
-                <strong>My Bag</strong>, {this.state.cartItems.length}{" "}
+                <strong>My Bag</strong>, {this.props.cartItems.length}{" "}
                 {this.props.cartItems.length == 1 ? "item" : "items"}{" "}
               </p>
-              {this.state.cartItems.map((cartItem, index) => (
+              {this.props.cartItems.map((cartItem, index) => (
                 <div className="cart-item" key={cartItem.product.id}>
                   <div className="content">
                     <p>{cartItem.product.name}</p>
@@ -106,61 +138,22 @@ class CartOverlay extends Component<{
                     </div>
                   </div>
                   <div className="quantity">
-                    <svg
+                    <img
                       onClick={() => {
                         this.state.increment(index);
                       }}
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M12 8V16"
-                        stroke="#1D1F22"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M8 12H16"
-                        stroke="#1D1F22"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <rect
-                        x="0.5"
-                        y="0.5"
-                        width="23"
-                        height="23"
-                        stroke="#1D1F22"
-                      />
-                    </svg>
+                      src={plusImg}
+                      alt=""
+                    />
+
                     {cartItem.quantity}
-                    <svg
+                    <img
                       onClick={() => {
                         this.state.decrement(index);
                       }}
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M8 12H16"
-                        stroke="#1D1F22"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <rect
-                        x="0.5"
-                        y="0.5"
-                        width="23"
-                        height="23"
-                        stroke="#1D1F22"
-                      />
-                    </svg>
+                      src={minusImg}
+                      alt=""
+                    />
                   </div>
                   <figure>
                     <div
@@ -174,10 +167,12 @@ class CartOverlay extends Component<{
               ))}
               <div className="total">
                 <p>Total</p>
-                <p>$100.00</p>
+                <p>{this.state.total}</p>
               </div>
               <div className="buttons">
-                <button className="bag">VIEW BAG</button>
+                <Link to="cart">
+                  <button className="bag">VIEW BAG</button>
+                </Link>
                 <button className="check-out">CHECK OUT</button>
               </div>
             </Container>

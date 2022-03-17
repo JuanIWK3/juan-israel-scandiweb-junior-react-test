@@ -3,14 +3,18 @@ import { Link } from "react-router-dom";
 
 import { cartLightImg } from "../../assets";
 import Header from "../../components/Header";
-import { Product, CartItem } from "../../interfaces";
-import { CATEGORY_QUERY } from "../../queries";
+import { Product, CartItem, CategoryElement } from "../../interfaces";
+import { CATEGORY_QUERY, client } from "../../queries";
 import { Container } from "./styles";
 
 export default class Category extends React.Component {
   state = {
-    categories: [] as Array<{ name: string; products: Product[] }>,
-    cartItems: [] as CartItem[],
+    loading: true,
+    error: false,
+    categories: [] as CategoryElement[],
+    cartItems:
+      (JSON.parse(localStorage.getItem("cartItems")!) as CartItem[]) ||
+      ([] as CartItem[]),
     overlayVisible: false,
     toggleCartOverlay: () => {
       this.setState({ overlayVisible: !this.state.overlayVisible });
@@ -21,6 +25,7 @@ export default class Category extends React.Component {
       if (tempCartItems.length === 0) {
         tempCartItems.push({ product: product, quantity: 1 });
         this.setState({ cartItems: tempCartItems });
+        localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
 
         return;
       }
@@ -29,6 +34,10 @@ export default class Category extends React.Component {
         if (tempCartItems[i].product.id === product.id) {
           tempCartItems[i].quantity += 1;
           this.setState({ cartItems: tempCartItems });
+          localStorage.setItem(
+            "cartItems",
+            JSON.stringify(this.state.cartItems)
+          );
 
           return;
         }
@@ -36,84 +45,100 @@ export default class Category extends React.Component {
 
       tempCartItems.push({ product: product, quantity: 1 });
       this.setState({ cartItems: tempCartItems });
+      localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
 
       return;
     },
   };
 
   componentDidMount() {
-    fetch(
-      "http://localhost:4000?" + new URLSearchParams({ query: CATEGORY_QUERY })
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        this.setState({ categories: res.data.categories });
-      });
+    const getProductData = async () => {
+      try {
+        const response = await client.query({
+          query: CATEGORY_QUERY,
+        });
+
+        this.setState({
+          categories: response.data.categories as CategoryElement,
+        });
+        this.setState({ loading: response.loading });
+      } catch (error) {
+        this.setState({ error: true });
+      }
+    };
+    getProductData();
   }
 
   render() {
-    return (
-      <Container>
-        <Header
-          toggle={this.state.toggleCartOverlay as () => {}}
-          cartItems={this.state.cartItems}
-        />
-        {this.state.overlayVisible && <div className="dim-overlay"></div>}
-        {this.state.categories.map((category) => {
-          return (
-            <div className="category" key={category.name}>
-              <h1 className="category-name">
-                {category.name.charAt(0).toUpperCase() + category.name.slice(1)}
-              </h1>
-              <div className="products">
-                {category.products.map((product) => {
-                  return (
-                    <div className="product" key={product.id}>
-                      <figure
-                        className={!product.inStock ? "out-of-stock" : ""}
-                      >
-                        {!product.inStock && (
-                          <Link to={`/products/${product.id}`}>
-                            <div className="out-of-stock">OUT OF STOCK</div>
-                          </Link>
-                        )}
-                        <div
-                          className="circle"
-                          onClick={() => {
-                            if (product.inStock) {
-                              this.state.addToCart(product);
-                            }
-                          }}
+    if (this.state.loading) {
+      return <Container>Loading...</Container>;
+    } else if (this.state.error) {
+      return <Container>Loading Error</Container>;
+    } else {
+      return (
+        <Container>
+          <Header
+            toggle={this.state.toggleCartOverlay as () => {}}
+            cartItems={this.state.cartItems}
+          />
+          {this.state.overlayVisible && <div className="dim-overlay"></div>}
+          {this.state.categories.map((category) => {
+            return (
+              <div className="category" key={category.name}>
+                <h1 className="category-name">
+                  {category.name.charAt(0).toUpperCase() +
+                    category.name.slice(1)}
+                </h1>
+                <div className="products">
+                  {category.products.map((product) => {
+                    return (
+                      <div className="product" key={product.id}>
+                        <figure
+                          className={!product.inStock ? "out-of-stock" : ""}
                         >
-                          <img src={cartLightImg} alt="" />
-                        </div>
-                        <Link to={`/products/${product.id}`}>
+                          {!product.inStock && (
+                            <Link to={`/products/${product.id}`}>
+                              <div className="out-of-stock">OUT OF STOCK</div>
+                            </Link>
+                          )}
                           <div
-                            className="product-image"
-                            style={{
-                              backgroundImage: `url(${product.gallery[0]}`,
+                            className="circle"
+                            onClick={() => {
+                              if (product.inStock) {
+                                this.state.addToCart(product);
+                              }
                             }}
-                          ></div>
-                        </Link>
-                      </figure>
-                      <Link to={`/products/${product.id}`}>
-                        <div className="content">
-                          <p className="name">{product.name}</p>
+                          >
+                            <img src={cartLightImg} alt="" />
+                          </div>
+                          <Link to={`/products/${product.id}`}>
+                            <div
+                              className="product-image"
+                              style={{
+                                backgroundImage: `url(${product.gallery[0]}`,
+                              }}
+                            ></div>
+                          </Link>
+                        </figure>
+                        <Link to={`/products/${product.id}`}>
+                          <div className="content">
+                            <p className="name">{product.name}</p>
 
-                          <p className="price">
-                            {product.prices[0].currency.symbol}
-                            {product.prices[0].amount}
-                          </p>
-                        </div>
-                      </Link>
-                    </div>
-                  );
-                })}
+                            <p className="price">
+                              {product.prices[0].currency.symbol}
+                              {product.prices[0].amount}
+                            </p>
+                          </div>
+                        </Link>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </Container>
-    );
+            );
+          })}
+        </Container>
+      );
+    }
   }
 }

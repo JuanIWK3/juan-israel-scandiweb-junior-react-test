@@ -12,5 +12,16 @@ body {
   color: #000;
 }
 
+a {
+  color: #000;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 
  `;

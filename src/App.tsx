@@ -5,6 +5,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import GlobalStyle from "./styles/global";
 import { CartItem } from "./interfaces";
 import ProductPage from "./pages/Product";
+import Cart from "./pages/Cart";
+import { ApolloProvider } from "@apollo/client";
+import { client } from "./queries";
 
 class App extends React.Component {
   state = {
@@ -12,32 +15,35 @@ class App extends React.Component {
   };
   render() {
     return (
-      <div className="App">
-        <GlobalStyle />
-        <Router>
-          <Routes>
-            <Route path="products">
-              <Route path=":productId" element={<ProductPage />}></Route>
-            </Route>
-            <Route path="/" element={<Category />}></Route>
-            <Route
-              path="*"
-              element={
-                <main
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "100vh",
-                  }}
-                >
-                  <p>There's nothing here!</p>
-                </main>
-              }
-            />
-          </Routes>
-        </Router>
-      </div>
+      <ApolloProvider client={client}>
+        <div className="App">
+          <GlobalStyle />
+          <Router>
+            <Routes>
+              <Route path="products">
+                <Route path=":productId" element={<ProductPage />}></Route>
+              </Route>
+              <Route path="/" element={<Category />}></Route>
+              <Route path="/cart" element={<Cart />}></Route>
+              <Route
+                path="*"
+                element={
+                  <main
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: "100vh",
+                    }}
+                  >
+                    <p>There's nothing here!</p>
+                  </main>
+                }
+              />
+            </Routes>
+          </Router>
+        </div>
+      </ApolloProvider>
     );
   }
 }

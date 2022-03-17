@@ -8,6 +8,7 @@ export const Container = styled.div`
   width: 100%;
 
   .category {
+    margin-top: 80px;
     margin-bottom: 100px;
   }
 
@@ -66,6 +67,7 @@ export const Container = styled.div`
       figure {
         height: 338px;
         width: 356px;
+        display: flex;
 
         text-align: center;
         margin-bottom: 0;
@@ -74,6 +76,7 @@ export const Container = styled.div`
         &.out-of-stock {
           .circle {
             cursor: default;
+            display: none;
           }
         }
 
@@ -97,7 +100,8 @@ export const Container = styled.div`
           height: 338px;
           width: 356px;
           background-position: center;
-          background-size: cover;
+          background-size: contain;
+          background-repeat: no-repeat;
         }
 
         .circle {

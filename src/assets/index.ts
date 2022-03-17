@@ -3,5 +3,15 @@ import cartImg from "./icons/cart.svg";
 import currencyOpenImg from "./icons/currencyOpen.svg";
 import currencyCloseImg from "./icons/currencyClose.svg";
 import cartLightImg from "./icons/cart-light.svg";
+import plusImg from "./icons/plus.svg";
+import minusImg from "./icons/minus.svg";
 
-export { logoImg, cartImg, currencyOpenImg, currencyCloseImg, cartLightImg };
+export {
+  logoImg,
+  cartImg,
+  currencyOpenImg,
+  currencyCloseImg,
+  cartLightImg,
+  plusImg,
+  minusImg,
+};

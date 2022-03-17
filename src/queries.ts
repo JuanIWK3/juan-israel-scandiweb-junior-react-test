@@ -1,8 +1,21 @@
-export const CATEGORY_QUERY = `
-  {
+import {
+  ApolloClient,
+  gql,
+  InMemoryCache,
+  NormalizedCacheObject,
+} from "@apollo/client";
+
+export const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
+  cache: new InMemoryCache(),
+  uri: "http://localhost:4000",
+});
+
+export const CATEGORY_QUERY = gql`
+  query Query {
     categories {
       name
       products {
+        id
         name
         inStock
         gallery
@@ -20,58 +33,52 @@ export const CATEGORY_QUERY = `
         }
         prices {
           currency {
-            symbol
             label
+            symbol
           }
           amount
         }
         brand
-        id
       }
     }
   }
 `;
 
-export const productQuery = (productId: string) => {
-  const PRODUCT_QUERY = `
-    {
-      product(id: "${productId}") {
-        name
-        inStock
-        gallery
-        description
-        category
-        attributes {
-          id
-          name
-          type
-          items {
-            displayValue
-            value
-            id
-          }
-        }
-        prices {
-          currency {
-            label
-            symbol
-          }
-          amount
-        }
-        brand
+export const PRODUCT_QUERY = gql`
+  query ProductQuery($productId: String!) {
+    product(id: $productId) {
+      name
+      inStock
+      gallery
+      description
+      category
+      attributes {
         id
+        name
+        type
+        items {
+          displayValue
+          value
+          id
+        }
       }
+      prices {
+        currency {
+          label
+          symbol
+        }
+        amount
+      }
+      brand
     }
-  `;
-
-  return PRODUCT_QUERY;
-};
-
-export const CURRENCY_QUERY = `
-{
-  currencies {
-    label
-    symbol
   }
-}
+`;
+
+export const CURRENCY_QUERY = gql`
+  query Query {
+    currencies {
+      label
+      symbol
+    }
+  }
 `;

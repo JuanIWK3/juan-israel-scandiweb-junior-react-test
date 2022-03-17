@@ -7,7 +7,7 @@ export const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 80px;
+
   z-index: 2;
 
   .wrapper {
@@ -15,6 +15,20 @@ export const Container = styled.div`
     align-items: center;
     justify-content: space-between;
     width: 100%;
+
+    @media (max-width: 600px) {
+      .filters {
+        display: none;
+      }
+      .logo {
+        position: relative;
+        left: 0;
+      }
+
+      .filter-select {
+        display: flex;
+      }
+    }
 
     @media (max-width: 1000px) {
       padding: 0 32px;
@@ -28,6 +42,10 @@ export const Container = styled.div`
     @media (min-width: 1800px) {
       width: 1664px;
     }
+  }
+
+  .filter-select {
+    display: none;
   }
 
   .filters {
@@ -56,28 +74,33 @@ export const Container = styled.div`
     align-items: center;
     justify-content: center;
 
-    .currency {
+    .currency-button {
+      padding: 8px;
       display: flex;
       align-items: center;
       cursor: pointer;
       user-select: none;
+      position: relative;
+
       img {
         margin-left: 8px;
       }
       .currency-menu {
         appearance: none;
         position: absolute;
-        top: 80px;
+        top: 56px;
+        right: 0;
         background-color: #fff;
-        box-shadow: 0px 0px 40px 0px #ccc;
+        box-shadow: 0px 0px 40px 0px #ddd;
 
         .currency {
+          display: flex;
           width: 100%;
           padding-left: 20px;
           padding-right: 40px;
 
           &:hover {
-            background: #ddd;
+            background: #eee;
           }
           p {
             margin: 21px 4px;

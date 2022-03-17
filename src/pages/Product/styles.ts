@@ -2,11 +2,13 @@ import { Attribute } from "./../../interfaces";
 import styled from "styled-components";
 
 export const Container = styled.div`
-  height: 100vh;
+  padding: 80px;
+  min-height: calc(100vh - 80px);
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 
   .dim-overlay {
     background: rgba(57, 55, 72, 0.22);
@@ -27,6 +29,7 @@ export const Container = styled.div`
       .gallery {
         .images-list {
           width: max-content;
+
           .image {
             width: 60px;
             height: 60px;
@@ -49,9 +52,17 @@ export const Container = styled.div`
         .images-list {
           flex-direction: column;
           max-height: 510px;
-          flex-wrap: wrap;
           overflow: auto;
+          margin-bottom: 0;
 
+          &::-webkit-scrollbar {
+            /* Hide scrollbar for Chrome, Safari and Opera */
+            display: none;
+          }
+          & {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+          }
           .image {
             width: 80px;
             height: 80px;
@@ -101,10 +112,12 @@ export const Container = styled.div`
       display: flex;
       flex-direction: row;
       overflow: auto;
+      margin-bottom: 40px;
 
       .image {
         width: 40px;
         height: 40px;
+        background-position: center;
         background-size: contain;
         background-repeat: no-repeat;
       }

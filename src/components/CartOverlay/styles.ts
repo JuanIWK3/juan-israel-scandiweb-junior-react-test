@@ -1,5 +1,29 @@
 import styled from "styled-components";
 
+export const Icon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+`;
+
+export const Badge = styled.div`
+  position: absolute;
+  right: 0;
+  top: 0;
+  color: #fff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding-bottom: 4px;
+
+  width: 20px;
+  height: 20px;
+  background-color: #000;
+`;
+
 export const DimOverlay = styled.div`
   width: 100%;
   height: 100%;
@@ -62,7 +86,8 @@ export const Container = styled.div`
         height: 137px;
         width: 105px;
         background-position: center;
-        background-size: cover;
+        background-size: contain;
+        background-repeat: no-repeat;
       }
     }
   }
