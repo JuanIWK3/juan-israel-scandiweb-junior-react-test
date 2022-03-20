@@ -12,8 +12,28 @@ import {
 } from "../../assets";
 import { Link } from "react-router-dom";
 import { client, CURRENCY_QUERY } from "../../queries";
+import { connect } from "react-redux";
+import { mapDispatchToProps, mapStateToProps } from "../../state/actions";
 
-class index extends Component<{ toggle: () => {}; cartItems: CartItem[] }> {
+class index extends Component<{
+  toggle: () => {};
+  cartItems: CartItem[];
+  currencyIndex: number;
+  changeCurrency: any;
+}> {
+  toggleCurrencyMenu = () => {
+    this.setState({ currencyMenuShow: !this.state.currencyMenuShow });
+  };
+
+  selectCurrency = (currency: Currency) => {
+    this.setState({
+      selectedCurrency: {
+        label: currency.label,
+        symbol: currency.symbol,
+      },
+    });
+  };
+
   state = {
     loading: true,
     error: false,
@@ -21,17 +41,6 @@ class index extends Component<{ toggle: () => {}; cartItems: CartItem[] }> {
     selectedCurrency: {} as Currency,
     currencyMenuShow: false,
     closeCart: false,
-    toggleCurrency: () => {
-      this.setState({ currencyMenuShow: !this.state.currencyMenuShow });
-    },
-    selectCurrency: (currency: Currency) => {
-      this.setState({
-        selectedCurrency: {
-          label: currency.label,
-          symbol: currency.symbol,
-        },
-      });
-    },
   };
 
   componentDidMount() {
@@ -76,9 +85,9 @@ class index extends Component<{ toggle: () => {}; cartItems: CartItem[] }> {
             <div className="currency-cart">
               <div
                 className="currency-button"
-                onClick={this.state.toggleCurrency}
+                onClick={this.toggleCurrencyMenu}
               >
-                $
+                {this.state.currencies[this.props.currencyIndex].symbol}
                 {this.state.currencyMenuShow ? (
                   <img src={currencyOpenImg} alt="" />
                 ) : (
@@ -86,11 +95,11 @@ class index extends Component<{ toggle: () => {}; cartItems: CartItem[] }> {
                 )}
                 {this.state.currencyMenuShow && (
                   <div className="currency-menu">
-                    {this.state.currencies.map((currency) => {
+                    {this.state.currencies.map((currency, index) => {
                       return (
                         <div
                           onClick={() => {
-                            this.state.selectCurrency(currency);
+                            this.props.changeCurrency(index);
                           }}
                           className="currency"
                           key={currency.symbol}
@@ -107,7 +116,7 @@ class index extends Component<{ toggle: () => {}; cartItems: CartItem[] }> {
               <div className="cart">
                 <CartOverlay
                   currencyOpen={this.state.currencyMenuShow}
-                  toggleCurrency={this.state.toggleCurrency}
+                  toggleCurrencyMenu={this.toggleCurrencyMenu}
                   toggleDim={this.props.toggle}
                   cartItems={this.props.cartItems}
                 />
@@ -120,4 +129,4 @@ class index extends Component<{ toggle: () => {}; cartItems: CartItem[] }> {
   }
 }
 
-export default index;
+export default connect(mapStateToProps, mapDispatchToProps)(index);

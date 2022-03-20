@@ -8,39 +8,42 @@ import { Container } from "./styles";
 export default class Cart extends Component<{}> {
   state = {
     cartItems: JSON.parse(localStorage.getItem("cartItems")!) as CartItem[],
-    increment: (index: number) => {
-      this.setState({
-        cartItem: [this.state.cartItems[index].quantity++],
-      });
-      localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
-    },
-    decrement: (index: number) => {
-      let tempCartItems = this.state.cartItems;
+    overlayVisible: false,
+  };
 
-      if (tempCartItems[index].quantity === 1) {
-        tempCartItems.splice(index, 1);
-        this.setState({ cartItems: tempCartItems });
-        localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
+  increment = (index: number) => {
+    this.setState({
+      cartItem: [this.state.cartItems[index].quantity++],
+    });
+    localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
+  };
 
-        return;
-      }
+  decrement = (index: number) => {
+    let tempCartItems = this.state.cartItems;
 
-      tempCartItems[index].quantity--;
-
+    if (tempCartItems[index].quantity === 1) {
+      tempCartItems.splice(index, 1);
       this.setState({ cartItems: tempCartItems });
       localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
-    },
-    overlayVisible: false,
-    toggleCartOverlay: () => {
-      this.setState({ overlayVisible: !this.state.overlayVisible });
-    },
+
+      return;
+    }
+
+    tempCartItems[index].quantity--;
+
+    this.setState({ cartItems: tempCartItems });
+    localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
+  };
+
+  toggleCartOverlay = () => {
+    this.setState({ overlayVisible: !this.state.overlayVisible });
   };
 
   render() {
     return (
       <>
         <Header
-          toggle={this.state.toggleCartOverlay as () => {}}
+          toggle={this.toggleCartOverlay as () => {}}
           cartItems={this.state.cartItems}
         />
         <Container>
@@ -64,7 +67,7 @@ export default class Cart extends Component<{}> {
                   <div className="quantity">
                     <img
                       onClick={() => {
-                        this.state.increment(index);
+                        this.increment(index);
                       }}
                       src={plusImg}
                       alt=""
@@ -72,7 +75,7 @@ export default class Cart extends Component<{}> {
                     <p>{cartItem.quantity}</p>
                     <img
                       onClick={() => {
-                        this.state.decrement(index);
+                        this.decrement(index);
                       }}
                       src={minusImg}
                       alt=""

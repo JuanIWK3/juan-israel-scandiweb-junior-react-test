@@ -1,53 +1,54 @@
-import React from "react";
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import Header from "../../components/Header";
-import { CartItem, Product } from "../../interfaces";
+import { CartItem, IProduct } from "../../interfaces";
 import { client, PRODUCT_QUERY } from "../../queries";
+import { mapStateToProps } from "../../state/actions";
 import { AttrButton, Container } from "./styles";
-import { graphql } from "graphql";
 
-export default class ProductPage extends React.Component {
+class Product extends Component<{ currencyIndex: number }> {
   state = {
     loading: true,
     error: false,
-    product: {} as Product,
-    addToCart: (product: Product) => {
-      let tempCartItems = this.state.cartItems;
+    product: {} as IProduct,
+    cartItems:
+      (JSON.parse(localStorage.getItem("cartItems")!) as CartItem[]) || [],
+    overlayVisible: false,
+    selectedImage: "",
+    selectedColor: "Select",
+    selectedCapacity: "Select",
+  };
 
-      if (tempCartItems.length === 0) {
-        tempCartItems.push({ product: product, quantity: 1 });
-        this.setState({ cartItems: tempCartItems });
-        localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
+  toggleCartOverlay = () => {
+    this.setState({ overlayVisible: !this.state.overlayVisible });
+  };
 
-        return;
-      }
+  addToCart = (product: IProduct) => {
+    let tempCartItems = this.state.cartItems;
 
-      for (let i = 0; i < tempCartItems.length; i++) {
-        if (tempCartItems[i].product.id === product.id) {
-          tempCartItems[i].quantity += 1;
-          this.setState({ cartItems: tempCartItems });
-          localStorage.setItem(
-            "cartItems",
-            JSON.stringify(this.state.cartItems)
-          );
-
-          return;
-        }
-      }
-
+    if (tempCartItems.length === 0) {
       tempCartItems.push({ product: product, quantity: 1 });
       this.setState({ cartItems: tempCartItems });
       localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
 
       return;
-    },
-    cartItems: JSON.parse(localStorage.getItem("cartItems")!) as CartItem[],
-    overlayVisible: false,
-    toggleCartOverlay: () => {
-      this.setState({ overlayVisible: !this.state.overlayVisible });
-    },
-    selectedImage: "",
-    selectedColor: "Select",
-    selectedCapacity: "Select",
+    }
+
+    for (let i = 0; i < tempCartItems.length; i++) {
+      if (tempCartItems[i].product.id === product.id) {
+        tempCartItems[i].quantity += 1;
+        this.setState({ cartItems: tempCartItems });
+        localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
+
+        return;
+      }
+    }
+
+    tempCartItems.push({ product: product, quantity: 1 });
+    this.setState({ cartItems: tempCartItems });
+    localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
+
+    return;
   };
 
   componentDidMount() {
@@ -85,7 +86,7 @@ export default class ProductPage extends React.Component {
       return (
         <>
           <Header
-            toggle={this.state.toggleCartOverlay as () => {}}
+            toggle={this.toggleCartOverlay as () => {}}
             cartItems={this.state.cartItems}
           />
           <Container>
@@ -176,14 +177,17 @@ export default class ProductPage extends React.Component {
                 <div className="price-wrapper">
                   <div className="price">PRICE:</div>
                   <div className="amount">
-                    {this.state.product.prices[0].currency.symbol}{" "}
-                    {this.state.product.prices[0].amount}
+                    {
+                      this.state.product.prices[this.props.currencyIndex]
+                        .currency.symbol
+                    }{" "}
+                    {this.state.product.prices[this.props.currencyIndex].amount}
                   </div>
                 </div>
                 <button
                   onClick={() => {
                     if (this.state.product) {
-                      this.state.addToCart(this.state.product);
+                      this.addToCart(this.state.product);
                     }
                   }}
                   className={
@@ -203,3 +207,5 @@ export default class ProductPage extends React.Component {
     }
   }
 }
+
+export default connect(mapStateToProps)(Product);

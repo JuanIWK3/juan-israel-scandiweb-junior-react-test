@@ -1,13 +1,15 @@
-import React from "react";
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
 import { cartLightImg } from "../../assets";
 import Header from "../../components/Header";
-import { Product, CartItem, CategoryElement } from "../../interfaces";
+import { IProduct, CartItem, CategoryElement } from "../../interfaces";
 import { CATEGORY_QUERY, client } from "../../queries";
+import { mapStateToProps } from "../../state/actions";
 import { Container } from "./styles";
 
-export default class Category extends React.Component {
+class Category extends Component<{ currencyIndex: number }> {
   state = {
     loading: true,
     error: false,
@@ -16,39 +18,38 @@ export default class Category extends React.Component {
       (JSON.parse(localStorage.getItem("cartItems")!) as CartItem[]) ||
       ([] as CartItem[]),
     overlayVisible: false,
-    toggleCartOverlay: () => {
-      this.setState({ overlayVisible: !this.state.overlayVisible });
-    },
-    addToCart: (product: Product) => {
-      let tempCartItems = this.state.cartItems;
+  };
 
-      if (tempCartItems.length === 0) {
-        tempCartItems.push({ product: product, quantity: 1 });
-        this.setState({ cartItems: tempCartItems });
-        localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
+  toggleCartOverlay = () => {
+    this.setState({ overlayVisible: !this.state.overlayVisible });
+  };
 
-        return;
-      }
+  addToCart = (product: IProduct) => {
+    let tempCartItems = this.state.cartItems;
 
-      for (let i = 0; i < tempCartItems.length; i++) {
-        if (tempCartItems[i].product.id === product.id) {
-          tempCartItems[i].quantity += 1;
-          this.setState({ cartItems: tempCartItems });
-          localStorage.setItem(
-            "cartItems",
-            JSON.stringify(this.state.cartItems)
-          );
-
-          return;
-        }
-      }
-
+    if (tempCartItems.length === 0) {
       tempCartItems.push({ product: product, quantity: 1 });
       this.setState({ cartItems: tempCartItems });
       localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
 
       return;
-    },
+    }
+
+    for (let i = 0; i < tempCartItems.length; i++) {
+      if (tempCartItems[i].product.id === product.id) {
+        tempCartItems[i].quantity += 1;
+        this.setState({ cartItems: tempCartItems });
+        localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
+
+        return;
+      }
+    }
+
+    tempCartItems.push({ product: product, quantity: 1 });
+    this.setState({ cartItems: tempCartItems });
+    localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
+
+    return;
   };
 
   componentDidMount() {
@@ -78,7 +79,7 @@ export default class Category extends React.Component {
       return (
         <Container>
           <Header
-            toggle={this.state.toggleCartOverlay as () => {}}
+            toggle={this.toggleCartOverlay as () => {}}
             cartItems={this.state.cartItems}
           />
           {this.state.overlayVisible && <div className="dim-overlay"></div>}
@@ -105,7 +106,7 @@ export default class Category extends React.Component {
                             className="circle"
                             onClick={() => {
                               if (product.inStock) {
-                                this.state.addToCart(product);
+                                this.addToCart(product);
                               }
                             }}
                           >
@@ -125,8 +126,11 @@ export default class Category extends React.Component {
                             <p className="name">{product.name}</p>
 
                             <p className="price">
-                              {product.prices[0].currency.symbol}
-                              {product.prices[0].amount}
+                              {
+                                product.prices[this.props.currencyIndex]
+                                  .currency.symbol
+                              }
+                              {product.prices[this.props.currencyIndex].amount}
                             </p>
                           </div>
                         </Link>
@@ -142,3 +146,5 @@ export default class Category extends React.Component {
     }
   }
 }
+
+export default connect(mapStateToProps)(Category);

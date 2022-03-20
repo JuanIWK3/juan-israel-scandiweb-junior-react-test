@@ -4,10 +4,10 @@ import Category from "./pages/Category";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import GlobalStyle from "./styles/global";
 import { CartItem } from "./interfaces";
-import ProductPage from "./pages/Product";
 import Cart from "./pages/Cart";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "./queries";
+import Product from "./pages/Product";
 
 class App extends React.Component {
   state = {
@@ -21,7 +21,7 @@ class App extends React.Component {
           <Router>
             <Routes>
               <Route path="products">
-                <Route path=":productId" element={<ProductPage />}></Route>
+                <Route path=":productId" element={<Product />}></Route>
               </Route>
               <Route path="/" element={<Category />}></Route>
               <Route path="/cart" element={<Cart />}></Route>

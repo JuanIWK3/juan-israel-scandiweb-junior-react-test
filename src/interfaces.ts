@@ -1,5 +1,5 @@
 export interface CartItem {
-  product: Product;
+  product: IProduct;
   quantity: number;
 }
 
@@ -9,10 +9,10 @@ export interface Data {
 
 export interface CategoryElement {
   name: string;
-  products: Product[];
+  products: IProduct[];
 }
 
-export interface Product {
+export interface IProduct {
   name: string;
   inStock: boolean;
   gallery: string[];
