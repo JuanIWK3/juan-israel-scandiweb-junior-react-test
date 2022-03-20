@@ -4,8 +4,10 @@ import { CartItem } from "../../interfaces";
 import Header from "../../components/Header";
 
 import { Container } from "./styles";
+import { connect } from "react-redux";
+import { mapDispatchToProps, mapStateToProps } from "../../state/actions";
 
-export default class Cart extends Component<{}> {
+class Cart extends Component<{ currencyIndex: number }> {
   state = {
     cartItems: JSON.parse(localStorage.getItem("cartItems")!) as CartItem[],
     overlayVisible: false,
@@ -58,8 +60,11 @@ export default class Cart extends Component<{}> {
                   <p className="brand">{cartItem.product.brand}</p>
                   <p className="name">{cartItem.product.name}</p>
                   <p className="price">
-                    {cartItem.product.prices[0].currency.symbol}
-                    {cartItem.product.prices[0].amount}
+                    {
+                      cartItem.product.prices[this.props.currencyIndex].currency
+                        .symbol
+                    }
+                    {cartItem.product.prices[this.props.currencyIndex].amount}
                   </p>
                   <div>sm{/* //! attributes */}</div>
                 </div>
@@ -98,3 +103,4 @@ export default class Cart extends Component<{}> {
     );
   }
 }
+export default connect(mapStateToProps, mapDispatchToProps)(Cart);

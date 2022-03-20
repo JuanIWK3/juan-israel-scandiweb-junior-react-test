@@ -26,9 +26,14 @@ class CartOverlay extends Component<{
         return;
       }
       for (let i = 0; i < this.props.cartItems.length; i++) {
-        sum += this.props.cartItems[i].product.prices[0].amount;
+        sum +=
+          this.props.cartItems[i].product.prices[this.props.currencyIndex]
+            .amount * this.props.cartItems[i].quantity;
       }
-      return `${this.props.cartItems[0].product.prices[0].currency.symbol} ${sum}`;
+      return `${
+        this.props.cartItems[0].product.prices[this.props.currencyIndex]
+          .currency.symbol
+      } ${sum.toFixed(2)}`;
     }
     return;
   };
@@ -36,6 +41,7 @@ class CartOverlay extends Component<{
   increment = (index: number) => {
     this.setState({
       cartItem: [this.props.cartItems[index].quantity++],
+      total: this.calculateTotal(),
     });
     localStorage.setItem("cartItems", JSON.stringify(this.props.cartItems));
   };
@@ -44,7 +50,10 @@ class CartOverlay extends Component<{
     if (!this.state.overlayVisible && this.props.currencyOpen) {
       this.props.toggleCurrencyMenu();
     }
-    this.setState({ overlayVisible: !this.state.overlayVisible });
+    this.setState({
+      overlayVisible: !this.state.overlayVisible,
+      total: this.calculateTotal(),
+    });
   };
 
   decrement = (index: number) => {
@@ -52,7 +61,7 @@ class CartOverlay extends Component<{
 
     if (tempCartItems[index].quantity === 1) {
       tempCartItems.splice(index, 1);
-      this.setState({ cartItems: tempCartItems });
+      this.setState({ cartItems: tempCartItems, total: this.calculateTotal() });
       localStorage.setItem("cartItems", JSON.stringify(this.props.cartItems));
 
       return;
@@ -60,7 +69,7 @@ class CartOverlay extends Component<{
 
     tempCartItems[index].quantity--;
 
-    this.setState({ cartItems: tempCartItems });
+    this.setState({ cartItems: tempCartItems, total: this.calculateTotal() });
     localStorage.setItem("cartItems", JSON.stringify(this.props.cartItems));
   };
 
