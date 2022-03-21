@@ -16,6 +16,8 @@ class CartOverlay extends Component<{
   currencyOpen: boolean;
   toggleCurrencyMenu: () => void;
   currencyIndex: number;
+  incrementCartItem: (index: number) => void;
+  decrementCartItem: (index: number) => void;
 }> {
   state = {
     total: "",
@@ -40,10 +42,6 @@ class CartOverlay extends Component<{
     // }
     return `${sum}`;
   };
-
-  increment = (index: number) => {};
-
-  decrement = (index: number) => {};
 
   toggleCartOverlay = () => {
     if (!this.state.overlayVisible && this.props.currencyOpen) {
@@ -147,7 +145,7 @@ class CartOverlay extends Component<{
                   <div className="quantity">
                     <img
                       onClick={() => {
-                        this.increment(index);
+                        this.props.incrementCartItem(index);
                       }}
                       src={plusImg}
                       alt=""
@@ -156,7 +154,7 @@ class CartOverlay extends Component<{
                     {cartItem.quantity}
                     <img
                       onClick={() => {
-                        this.decrement(index);
+                        this.props.decrementCartItem(index);
                       }}
                       src={minusImg}
                       alt=""
