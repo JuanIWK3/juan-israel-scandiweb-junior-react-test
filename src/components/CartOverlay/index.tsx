@@ -25,36 +25,41 @@ class CartOverlay extends Component<{
   };
 
   calculateTotal = () => {
+    console.log("a");
+
     let sum = 0;
-    // if (this.props.cart.cartItems) {
-    //   if (!this.props.cart.cartItems.length) {
-    //     return;
-    //   }
-    //   for (let i = 0; i < this.props.cart.cartItems.length; i++) {
-    //     sum +=
-    //       this.props.cart.cartItems[i].product.prices[this.props.currencyIndex]
-    //         .amount * this.props.cart.cartItems[i].quantity;
-    //   }
-    //   return `${
-    //     this.props.cart.cartItems[0].product.prices[this.props.currencyIndex]
-    //       .currency.symbol
-    //   } ${sum.toFixed(2)}`;
-    // }
-    return `${sum}`;
+    if (!this.props.cart.cartItems || !this.props.cart.cartItems.length) {
+      return;
+    }
+
+    for (let i = 0; i < this.props.cart.cartItems.length; i++) {
+      sum +=
+        this.props.cart.cartItems[i].product.prices[this.props.currencyIndex]
+          .amount * this.props.cart.cartItems[i].quantity;
+    }
+
+    this.setState({
+      total: `${
+        this.props.cart.cartItems[0].product.prices[this.props.currencyIndex]
+          .currency.symbol
+      } ${sum.toFixed(2)}`,
+    });
   };
 
   toggleCartOverlay = () => {
     if (!this.state.overlayVisible && this.props.currencyOpen) {
       this.props.toggleCurrencyMenu();
     }
+    if (!this.state.overlayVisible) {
+      this.calculateTotal();
+    }
     this.setState({
       overlayVisible: !this.state.overlayVisible,
-      total: this.calculateTotal(),
     });
   };
 
   componentDidMount() {
-    this.setState({ total: this.calculateTotal() });
+    this.calculateTotal();
   }
 
   componentDidUpdate() {
@@ -146,6 +151,7 @@ class CartOverlay extends Component<{
                     <img
                       onClick={() => {
                         this.props.incrementCartItem(index);
+                        this.calculateTotal();
                       }}
                       src={plusImg}
                       alt=""
@@ -155,6 +161,7 @@ class CartOverlay extends Component<{
                     <img
                       onClick={() => {
                         this.props.decrementCartItem(index);
+                        this.calculateTotal();
                       }}
                       src={minusImg}
                       alt=""
