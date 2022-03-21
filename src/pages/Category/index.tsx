@@ -6,50 +6,27 @@ import { cartLightImg } from "../../assets";
 import Header from "../../components/Header";
 import { IProduct, CartItem, CategoryElement } from "../../interfaces";
 import { CATEGORY_QUERY, client } from "../../queries";
-import { mapStateToProps } from "../../state/actions";
+import {
+  mapDispatchToProps,
+  mapStateToProps,
+} from "../../state/actions/actions";
 import { Container } from "./styles";
 
-class Category extends Component<{ currencyIndex: number }> {
+class Category extends Component<{
+  currencyIndex: number;
+  cart: { cartItems: CartItem[] };
+  addCartItem: (product: IProduct) => void;
+}> {
   state = {
     loading: true,
     error: false,
     categories: [] as CategoryElement[],
-    cartItems:
-      (JSON.parse(localStorage.getItem("cartItems")!) as CartItem[]) ||
-      ([] as CartItem[]),
+
     overlayVisible: false,
   };
 
   toggleCartOverlay = () => {
     this.setState({ overlayVisible: !this.state.overlayVisible });
-  };
-
-  addToCart = (product: IProduct) => {
-    let tempCartItems = this.state.cartItems;
-
-    if (tempCartItems.length === 0) {
-      tempCartItems.push({ product: product, quantity: 1 });
-      this.setState({ cartItems: tempCartItems });
-      localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
-
-      return;
-    }
-
-    for (let i = 0; i < tempCartItems.length; i++) {
-      if (tempCartItems[i].product.id === product.id) {
-        tempCartItems[i].quantity += 1;
-        this.setState({ cartItems: tempCartItems });
-        localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
-
-        return;
-      }
-    }
-
-    tempCartItems.push({ product: product, quantity: 1 });
-    this.setState({ cartItems: tempCartItems });
-    localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
-
-    return;
   };
 
   componentDidMount() {
@@ -78,10 +55,8 @@ class Category extends Component<{ currencyIndex: number }> {
     } else {
       return (
         <Container>
-          <Header
-            toggle={this.toggleCartOverlay as () => {}}
-            cartItems={this.state.cartItems}
-          />
+          <Header toggle={this.toggleCartOverlay as () => {}} />
+          <Link to="/cart">GO TO CART</Link>
           {this.state.overlayVisible && <div className="dim-overlay"></div>}
           {this.state.categories.map((category) => {
             return (
@@ -106,7 +81,7 @@ class Category extends Component<{ currencyIndex: number }> {
                             className="circle"
                             onClick={() => {
                               if (product.inStock) {
-                                this.addToCart(product);
+                                this.props.addCartItem(product);
                               }
                             }}
                           >
@@ -147,4 +122,4 @@ class Category extends Component<{ currencyIndex: number }> {
   }
 }
 
-export default connect(mapStateToProps)(Category);
+export default connect(mapStateToProps, mapDispatchToProps)(Category);

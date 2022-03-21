@@ -3,16 +3,20 @@ import { connect } from "react-redux";
 import Header from "../../components/Header";
 import { CartItem, IProduct } from "../../interfaces";
 import { client, PRODUCT_QUERY } from "../../queries";
-import { mapStateToProps } from "../../state/actions";
+import {
+  mapDispatchToProps,
+  mapStateToProps,
+} from "../../state/actions/actions";
 import { AttrButton, Container } from "./styles";
 
-class Product extends Component<{ currencyIndex: number }> {
+class Product extends Component<{
+  currencyIndex: number;
+  cart: { cartItems: CartItem[] };
+}> {
   state = {
     loading: true,
     error: false,
     product: {} as IProduct,
-    cartItems:
-      (JSON.parse(localStorage.getItem("cartItems")!) as CartItem[]) || [],
     overlayVisible: false,
     selectedImage: "",
     selectedColor: "Select",
@@ -24,12 +28,15 @@ class Product extends Component<{ currencyIndex: number }> {
   };
 
   addToCart = (product: IProduct) => {
-    let tempCartItems = this.state.cartItems;
+    let tempCartItems = this.props.cart.cartItems;
 
     if (tempCartItems.length === 0) {
       tempCartItems.push({ product: product, quantity: 1 });
-      this.setState({ cartItems: tempCartItems });
-      localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
+
+      localStorage.setItem(
+        "cartItems",
+        JSON.stringify(this.props.cart.cartItems)
+      );
 
       return;
     }
@@ -37,16 +44,22 @@ class Product extends Component<{ currencyIndex: number }> {
     for (let i = 0; i < tempCartItems.length; i++) {
       if (tempCartItems[i].product.id === product.id) {
         tempCartItems[i].quantity += 1;
-        this.setState({ cartItems: tempCartItems });
-        localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
+
+        localStorage.setItem(
+          "cartItems",
+          JSON.stringify(this.props.cart.cartItems)
+        );
 
         return;
       }
     }
 
     tempCartItems.push({ product: product, quantity: 1 });
-    this.setState({ cartItems: tempCartItems });
-    localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
+
+    localStorage.setItem(
+      "cartItems",
+      JSON.stringify(this.props.cart.cartItems)
+    );
 
     return;
   };
@@ -85,10 +98,7 @@ class Product extends Component<{ currencyIndex: number }> {
     } else {
       return (
         <>
-          <Header
-            toggle={this.toggleCartOverlay as () => {}}
-            cartItems={this.state.cartItems}
-          />
+          <Header toggle={this.toggleCartOverlay as () => {}} />
           <Container>
             {this.state.overlayVisible && <div className="dim-overlay"></div>}
             <main>
@@ -208,4 +218,4 @@ class Product extends Component<{ currencyIndex: number }> {
   }
 }
 
-export default connect(mapStateToProps)(Product);
+export default connect(mapStateToProps, mapDispatchToProps)(Product);

@@ -13,11 +13,14 @@ import {
 import { Link } from "react-router-dom";
 import { client, CURRENCY_QUERY } from "../../queries";
 import { connect } from "react-redux";
-import { mapDispatchToProps, mapStateToProps } from "../../state/actions";
+import {
+  mapDispatchToProps,
+  mapStateToProps,
+} from "../../state/actions/actions";
 
 class index extends Component<{
   toggle: () => {};
-  cartItems: CartItem[];
+  cart: { cartItems: CartItem[] };
   currencyIndex: number;
   changeCurrency: any;
 }> {
@@ -118,7 +121,6 @@ class index extends Component<{
                   currencyOpen={this.state.currencyMenuShow}
                   toggleCurrencyMenu={this.toggleCurrencyMenu}
                   toggleDim={this.props.toggle}
-                  cartItems={this.props.cartItems}
                 />
               </div>
             </div>

@@ -3,12 +3,15 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { cartImg, minusImg, plusImg } from "../../assets";
 import { CartItem } from "../../interfaces";
-import { mapDispatchToProps, mapStateToProps } from "../../state/actions";
+import {
+  mapDispatchToProps,
+  mapStateToProps,
+} from "../../state/actions/actions";
 
 import { Badge, Container, Icon } from "./styles";
 
 class CartOverlay extends Component<{
-  cartItems: CartItem[];
+  cart: { cartItems: CartItem[] };
   toggleDim: () => {};
   currencyOpen: boolean;
   toggleCurrencyMenu: () => void;
@@ -21,30 +24,26 @@ class CartOverlay extends Component<{
 
   calculateTotal = () => {
     let sum = 0;
-    if (this.props.cartItems) {
-      if (!this.props.cartItems.length) {
-        return;
-      }
-      for (let i = 0; i < this.props.cartItems.length; i++) {
-        sum +=
-          this.props.cartItems[i].product.prices[this.props.currencyIndex]
-            .amount * this.props.cartItems[i].quantity;
-      }
-      return `${
-        this.props.cartItems[0].product.prices[this.props.currencyIndex]
-          .currency.symbol
-      } ${sum.toFixed(2)}`;
-    }
-    return;
+    // if (this.props.cart.cartItems) {
+    //   if (!this.props.cart.cartItems.length) {
+    //     return;
+    //   }
+    //   for (let i = 0; i < this.props.cart.cartItems.length; i++) {
+    //     sum +=
+    //       this.props.cart.cartItems[i].product.prices[this.props.currencyIndex]
+    //         .amount * this.props.cart.cartItems[i].quantity;
+    //   }
+    //   return `${
+    //     this.props.cart.cartItems[0].product.prices[this.props.currencyIndex]
+    //       .currency.symbol
+    //   } ${sum.toFixed(2)}`;
+    // }
+    return `${sum}`;
   };
 
-  increment = (index: number) => {
-    this.setState({
-      cartItem: [this.props.cartItems[index].quantity++],
-      total: this.calculateTotal(),
-    });
-    localStorage.setItem("cartItems", JSON.stringify(this.props.cartItems));
-  };
+  increment = (index: number) => {};
+
+  decrement = (index: number) => {};
 
   toggleCartOverlay = () => {
     if (!this.state.overlayVisible && this.props.currencyOpen) {
@@ -54,23 +53,6 @@ class CartOverlay extends Component<{
       overlayVisible: !this.state.overlayVisible,
       total: this.calculateTotal(),
     });
-  };
-
-  decrement = (index: number) => {
-    let tempCartItems = this.props.cartItems;
-
-    if (tempCartItems[index].quantity === 1) {
-      tempCartItems.splice(index, 1);
-      this.setState({ cartItems: tempCartItems, total: this.calculateTotal() });
-      localStorage.setItem("cartItems", JSON.stringify(this.props.cartItems));
-
-      return;
-    }
-
-    tempCartItems[index].quantity--;
-
-    this.setState({ cartItems: tempCartItems, total: this.calculateTotal() });
-    localStorage.setItem("cartItems", JSON.stringify(this.props.cartItems));
   };
 
   componentDidMount() {
@@ -89,7 +71,7 @@ class CartOverlay extends Component<{
       <div style={{ position: "relative" }}>
         <Icon>
           <Badge>
-            <div>{this.props.cartItems.length}</div>
+            <div>{this.props.cart.cartItems.length}</div>
           </Badge>
           <img
             style={{ cursor: "pointer", padding: "5px 11px", zIndex: 2 }}
@@ -105,10 +87,10 @@ class CartOverlay extends Component<{
           <>
             <Container>
               <p className="title">
-                <strong>My Bag</strong>, {this.props.cartItems.length}{" "}
-                {this.props.cartItems.length == 1 ? "item" : "items"}{" "}
+                <strong>My Bag</strong>, {this.props.cart.cartItems.length}{" "}
+                {this.props.cart.cartItems.length == 1 ? "item" : "items"}{" "}
               </p>
-              {this.props.cartItems.map((cartItem, index) => (
+              {this.props.cart.cartItems.map((cartItem, index) => (
                 <div className="cart-item" key={cartItem.product.id}>
                   <div className="content">
                     <p>{cartItem.product.name}</p>
@@ -195,7 +177,7 @@ class CartOverlay extends Component<{
                 <p>{this.state.total}</p>
               </div>
               <div className="buttons">
-                <Link to="cart">
+                <Link to="/cart">
                   <button className="bag">VIEW BAG</button>
                 </Link>
                 <button className="check-out">CHECK OUT</button>
@@ -208,4 +190,4 @@ class CartOverlay extends Component<{
   }
 }
 
-export default connect(mapStateToProps)(CartOverlay);
+export default connect(mapStateToProps, mapDispatchToProps)(CartOverlay);

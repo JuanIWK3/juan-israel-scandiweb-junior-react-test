@@ -5,36 +5,27 @@ import Header from "../../components/Header";
 
 import { Container } from "./styles";
 import { connect } from "react-redux";
-import { mapDispatchToProps, mapStateToProps } from "../../state/actions";
+import {
+  mapDispatchToProps,
+  mapStateToProps,
+} from "../../state/actions/actions";
 
-class Cart extends Component<{ currencyIndex: number }> {
+class Cart extends Component<{
+  currencyIndex: number;
+  cart: { cartItems: CartItem[] };
+  incrementCartItem: (index: number) => void;
+  decrementCartItem: (index: number) => void;
+}> {
   state = {
-    cartItems: JSON.parse(localStorage.getItem("cartItems")!) as CartItem[],
     overlayVisible: false,
   };
 
   increment = (index: number) => {
-    this.setState({
-      cartItem: [this.state.cartItems[index].quantity++],
-    });
-    localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
+    this.props.incrementCartItem(index);
   };
 
   decrement = (index: number) => {
-    let tempCartItems = this.state.cartItems;
-
-    if (tempCartItems[index].quantity === 1) {
-      tempCartItems.splice(index, 1);
-      this.setState({ cartItems: tempCartItems });
-      localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
-
-      return;
-    }
-
-    tempCartItems[index].quantity--;
-
-    this.setState({ cartItems: tempCartItems });
-    localStorage.setItem("cartItems", JSON.stringify(this.state.cartItems));
+    this.props.decrementCartItem(index);
   };
 
   toggleCartOverlay = () => {
@@ -44,15 +35,12 @@ class Cart extends Component<{ currencyIndex: number }> {
   render() {
     return (
       <>
-        <Header
-          toggle={this.toggleCartOverlay as () => {}}
-          cartItems={this.state.cartItems}
-        />
+        <Header toggle={this.toggleCartOverlay as () => {}} />
         <Container>
           <div className="title">
             <p>Cart</p>
           </div>
-          {this.state.cartItems.map((cartItem, index) => (
+          {this.props.cart.cartItems.map((cartItem, index) => (
             <div className="cart-item-wrapper" key={index}>
               <div className="divider"></div>
               <div className="cart-item" key={cartItem.product.id}>

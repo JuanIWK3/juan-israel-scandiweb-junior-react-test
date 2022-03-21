@@ -1,11 +1,4 @@
-export enum ActionType {
-  CHANGE_CURRENCY = "change-currency",
-}
-interface IChangeCurrency {
-  type: ActionType.CHANGE_CURRENCY;
-  payload: number;
-}
-export type Action = IChangeCurrency;
+import { Action, ActionType } from "../types";
 
 const initialState: number = 0;
 
