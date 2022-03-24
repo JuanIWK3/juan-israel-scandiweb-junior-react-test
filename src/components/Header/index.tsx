@@ -15,6 +15,7 @@ import {
   cartImg,
   currencyOpenImg,
   currencyCloseImg,
+  hamImg,
 } from "../../assets";
 import { Link } from "react-router-dom";
 import { CATEGORY_QUERY, client, CURRENCY_QUERY } from "../../queries";
@@ -35,6 +36,9 @@ class index extends Component<{
   toggleCurrencyMenu = () => {
     this.setState({ currencyMenuShow: !this.state.currencyMenuShow });
   };
+  toggleCategoryMenu = () => {
+    this.setState({ showCategories: !this.state.showCategories });
+  };
 
   selectCurrency = (currency: Currency) => {
     this.setState({
@@ -54,6 +58,7 @@ class index extends Component<{
     closeCart: false,
     selectedFilter: this.props.categoryIndex,
     categories: [] as CategoryElement[],
+    showCategories: false,
   };
 
   componentDidMount() {
@@ -119,6 +124,30 @@ class index extends Component<{
                   </button>
                 );
               })}
+            </div>
+
+            <div className="category-button" onClick={this.toggleCategoryMenu}>
+              <img src={hamImg} alt="ham" />
+              {this.state.showCategories && (
+                <div className="categories-menu">
+                  {this.state.categories.map((category, index) => {
+                    return (
+                      <div
+                        onClick={() => {
+                          this.props.changeCategory(index);
+                        }}
+                        key={index}
+                        className="category-option"
+                      >
+                        <p>
+                          {category.name.charAt(0).toUpperCase() +
+                            category.name.slice(1)}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             <div className="logo">

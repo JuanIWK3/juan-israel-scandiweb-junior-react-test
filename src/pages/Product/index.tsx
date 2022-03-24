@@ -60,11 +60,14 @@ class ProductPage extends Component<{
         this.setState({ product: response.data.product as Product });
         this.setState({ selectedAttributes: defaultAttr(this.state.product) });
         this.setState({ selectedImage: this.state.product.gallery[0] });
-        this.setState({});
 
         //* === */
 
         this.setState({ loading: response.loading });
+        const description = document.querySelector(".description");
+        if (description) {
+          description.innerHTML = this.state.product.description;
+        }
       } catch (error) {
         this.setState({ error: true });
       }

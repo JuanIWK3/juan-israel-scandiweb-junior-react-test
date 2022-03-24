@@ -96,17 +96,31 @@ class CartOverlay extends Component<{
               {this.props.cart.cartItems.map((cartItem, index) => (
                 <div className="cart-item" key={index}>
                   <div className="content">
-                    <div>
+                    <div className="brand-name">
                       <p>{cartItem.product.brand}</p>
                       <p>{cartItem.product.name}</p>
                     </div>
-                    <p>
+                    <p className="price">
                       {
                         cartItem.product.prices[this.props.currencyIndex]
                           .currency.symbol
                       }
                       {cartItem.product.prices[this.props.currencyIndex].amount}
                     </p>
+                    {cartItem.product.attributes.map((attribute, index) => {
+                      return (
+                        <div className="attr" key={attribute.id}>
+                          <div className="attr-name">
+                            {`${cartItem.product.attributes[index].name}:
+                            ${
+                              cartItem.product.attributes[index].items[
+                                cartItem.selectedAttributes[index].item
+                              ].displayValue
+                            }`}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                   <div className="quantity">
                     <img

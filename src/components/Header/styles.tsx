@@ -16,6 +16,39 @@ export const Container = styled.div`
     justify-content: space-between;
     width: 100%;
 
+    .category-button {
+      display: none;
+      button {
+        padding: 8px;
+      }
+      @media (max-width: 600px) {
+        display: flex;
+      }
+    }
+    .categories-menu {
+      appearance: none;
+      position: absolute;
+      top: 56px;
+      left: 0;
+      background-color: #fff;
+      box-shadow: 0px 0px 40px 0px #ddd;
+
+      .category-option {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding-left: 20px;
+        padding-right: 40px;
+
+        &:hover {
+          background: #eee;
+        }
+        p {
+          margin: 21px 4px;
+        }
+      }
+    }
+
     @media (max-width: 600px) {
       .filters {
         display: none;

@@ -65,6 +65,19 @@ export const Container = styled.div`
       justify-content: space-between;
       width: 144px;
 
+      .brand-name {
+        font-size: 16px;
+        font-weight: 300;
+      }
+
+      .price {
+        font-size: 16px;
+        font-weight: 500;
+      }
+      .attr {
+        font-size: 12px;
+      }
+
       svg:first-child {
         margin-right: 8px;
       }

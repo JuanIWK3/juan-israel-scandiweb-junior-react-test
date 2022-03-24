@@ -79,6 +79,10 @@ export const Container = styled.div`
       .content {
         width: 293px;
         padding: 0;
+
+        .description {
+          max-height: 120px;
+        }
       }
     }
 
@@ -212,7 +216,6 @@ export const Container = styled.div`
     }
 
     .description {
-      max-height: 103px;
       font-size: 16px;
       font-family: Roboto;
       font-weight: 400;

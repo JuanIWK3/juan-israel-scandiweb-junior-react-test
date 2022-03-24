@@ -6,6 +6,7 @@ import cartLightImg from "./icons/cart-light.svg";
 import plusImg from "./icons/plus.svg";
 import minusImg from "./icons/minus.svg";
 import emptyCartImg from "./images/empty-cart.png";
+import hamImg from "./icons/ham.svg";
 
 export {
   logoImg,
@@ -16,4 +17,5 @@ export {
   plusImg,
   minusImg,
   emptyCartImg,
+  hamImg,
 };

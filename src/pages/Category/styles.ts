@@ -7,6 +7,12 @@ export const Container = styled.div`
   justify-content: center;
   width: 100%;
 
+  @media (max-width: 500px) {
+    .products {
+      grid-template-columns: 1fr;
+    }
+  }
+
   .category {
     margin-top: 80px;
     margin-bottom: 100px;
@@ -29,7 +35,6 @@ export const Container = styled.div`
   .products {
     margin-top: 100px;
     display: grid;
-    grid-template-columns: 386px;
 
     gap: 40px;
 

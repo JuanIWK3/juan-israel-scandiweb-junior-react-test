@@ -26,6 +26,7 @@ import { Container } from "./styles";
 class Category extends Component<{
   currencyIndex: number;
   categoryIndex: number;
+
   cart: { cartItems: CartItem[] };
   addCartItem: (product: Product) => void;
 }> {
@@ -33,7 +34,6 @@ class Category extends Component<{
     loading: true,
     error: false,
     categories: [] as CategoryElement[],
-
     overlayVisible: false,
   };
 
