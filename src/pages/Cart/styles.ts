@@ -7,6 +7,7 @@ export const Container = styled.div`
   justify-content: center;
   width: 100%;
   margin-top: 80px;
+  margin-bottom: 80px;
 
   @media (max-width: 1000px) {
     padding: 0 32px;

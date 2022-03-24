@@ -5,6 +5,7 @@ import currencyCloseImg from "./icons/currencyClose.svg";
 import cartLightImg from "./icons/cart-light.svg";
 import plusImg from "./icons/plus.svg";
 import minusImg from "./icons/minus.svg";
+import emptyCartImg from "./images/empty-cart.png";
 
 export {
   logoImg,
@@ -14,4 +15,5 @@ export {
   cartLightImg,
   plusImg,
   minusImg,
+  emptyCartImg,
 };

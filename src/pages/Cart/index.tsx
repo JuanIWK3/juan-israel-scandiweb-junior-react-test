@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { cartImg, minusImg, plusImg } from "../../assets";
+import { cartImg, emptyCartImg, minusImg, plusImg } from "../../assets";
 import { CartItem } from "../../interfaces";
 import Header from "../../components/Header";
 
@@ -40,6 +40,9 @@ class Cart extends Component<{
           <div className="title">
             <p>Cart</p>
           </div>
+          {!this.props.cart.cartItems.length && (
+            <img src={emptyCartImg} alt="empty cart" />
+          )}
           {this.props.cart.cartItems.map((cartItem, index) => (
             <div className="cart-item-wrapper" key={index}>
               <div className="divider"></div>

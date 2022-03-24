@@ -14,7 +14,7 @@ import {
   SelectedAttribute,
 } from "../../interfaces";
 
-import { CATEGORY_QUERY, client } from "../../queries";
+import { ALL_ITEMS_QUERY, CATEGORY_QUERY, client } from "../../queries";
 
 import {
   mapDispatchToProps,
@@ -25,6 +25,7 @@ import { Container } from "./styles";
 
 class Category extends Component<{
   currencyIndex: number;
+  categoryIndex: number;
   cart: { cartItems: CartItem[] };
   addCartItem: (product: Product) => void;
 }> {
@@ -44,12 +45,14 @@ class Category extends Component<{
     const getProductData = async () => {
       try {
         const response = await client.query({
-          query: CATEGORY_QUERY,
+          query: ALL_ITEMS_QUERY,
         });
 
         this.setState({
           categories: response.data.categories as CategoryElement,
         });
+        console.log(this.state.categories);
+
         this.setState({ loading: response.loading });
       } catch (error) {
         this.setState({ error: true });
@@ -68,64 +71,69 @@ class Category extends Component<{
         <Container>
           <Header toggle={this.toggleCartOverlay as () => {}} />
           {this.state.overlayVisible && <div className="dim-overlay"></div>}
-          {this.state.categories.map((category) => {
-            return (
-              <div className="category" key={category.name}>
-                <h1 className="category-name">
-                  {category.name.charAt(0).toUpperCase() +
-                    category.name.slice(1)}
-                </h1>
-                <div className="products">
-                  {category.products.map((product) => {
-                    return (
-                      <div className="product" key={product.id}>
-                        <figure
-                          className={!product.inStock ? "out-of-stock" : ""}
-                        >
-                          {!product.inStock && (
-                            <Link to={`/products/${product.id}`}>
-                              <div className="out-of-stock">OUT OF STOCK</div>
-                            </Link>
-                          )}
-                          <div
-                            className="circle"
-                            onClick={() => {
-                              if (product.inStock) {
-                                this.props.addCartItem(product);
-                              }
-                            }}
-                          >
-                            <img src={cartLightImg} alt="" />
-                          </div>
-                          <Link to={`/products/${product.id}`}>
-                            <div
-                              className="product-image"
-                              style={{
-                                backgroundImage: `url(${product.gallery[0]}`,
-                              }}
-                            ></div>
-                          </Link>
-                        </figure>
-                        <Link to={`/products/${product.id}`}>
-                          <div className="content">
-                            <p className="name">{product.name}</p>
 
-                            <p className="price">
-                              {
-                                product.prices[this.props.currencyIndex]
-                                  .currency.symbol
-                              }
-                              {product.prices[this.props.currencyIndex].amount}
-                            </p>
-                          </div>
+          <div
+            className="category"
+            key={this.state.categories[this.props.categoryIndex].name}
+          >
+            <h1 className="category-name">
+              {this.state.categories[this.props.categoryIndex].name
+                .charAt(0)
+                .toUpperCase() +
+                this.state.categories[this.props.categoryIndex].name.slice(1)}
+            </h1>
+            <div className="products">
+              {this.state.categories[this.props.categoryIndex].products.map(
+                (product) => {
+                  return (
+                    <div className="product" key={product.id}>
+                      <figure
+                        className={!product.inStock ? "out-of-stock" : ""}
+                      >
+                        {!product.inStock && (
+                          <Link to={`/products/${product.id}`}>
+                            <div className="out-of-stock">OUT OF STOCK</div>
+                          </Link>
+                        )}
+                        <div
+                          className="circle"
+                          onClick={() => {
+                            if (product.inStock) {
+                              this.props.addCartItem(product);
+                            }
+                          }}
+                        >
+                          <img src={cartLightImg} alt="" />
+                        </div>
+                        <Link to={`/products/${product.id}`}>
+                          <div
+                            className="product-image"
+                            style={{
+                              backgroundImage: `url(${product.gallery[0]}`,
+                            }}
+                          ></div>
                         </Link>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
+                      </figure>
+                      <Link to={`/products/${product.id}`}>
+                        <div className="content">
+                          <p className="name">{`${product.brand} ${product.name}`}</p>
+                          {product.category}
+
+                          <p className="price">
+                            {
+                              product.prices[this.props.currencyIndex].currency
+                                .symbol
+                            }
+                            {product.prices[this.props.currencyIndex].amount}
+                          </p>
+                        </div>
+                      </Link>
+                    </div>
+                  );
+                }
+              )}
+            </div>
+          </div>
         </Container>
       );
     }

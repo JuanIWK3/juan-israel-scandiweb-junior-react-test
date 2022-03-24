@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { Attribute, CartItem, Currency, Product } from "../../interfaces";
+import {
+  Attribute,
+  CartItem,
+  CategoryElement,
+  Currency,
+  Product,
+} from "../../interfaces";
 import CartOverlay from "../CartOverlay";
 
 import { Container } from "./styles";
@@ -11,7 +17,7 @@ import {
   currencyCloseImg,
 } from "../../assets";
 import { Link } from "react-router-dom";
-import { client, CURRENCY_QUERY } from "../../queries";
+import { CATEGORY_QUERY, client, CURRENCY_QUERY } from "../../queries";
 import { connect } from "react-redux";
 import {
   mapDispatchToProps,
@@ -22,7 +28,9 @@ class index extends Component<{
   toggle: () => {};
   cart: { cartItems: CartItem[] };
   currencyIndex: number;
+  categoryIndex: number;
   changeCurrency: any;
+  changeCategory: (index: number) => void;
 }> {
   toggleCurrencyMenu = () => {
     this.setState({ currencyMenuShow: !this.state.currencyMenuShow });
@@ -44,10 +52,25 @@ class index extends Component<{
     selectedCurrency: {} as Currency,
     currencyMenuShow: false,
     closeCart: false,
-    selectedFilter: "WOMEN",
+    selectedFilter: this.props.categoryIndex,
+    categories: [] as CategoryElement[],
   };
 
   componentDidMount() {
+    const getCategoryData = async () => {
+      try {
+        const response = await client.query({
+          query: CATEGORY_QUERY,
+        });
+
+        this.setState({
+          categories: response.data.categories as CategoryElement,
+        });
+        console.log(this.state.categories);
+      } catch (error) {
+        this.setState({ error: true });
+      }
+    };
     const getCurrencyData = async () => {
       try {
         const response = await client.query({
@@ -62,10 +85,9 @@ class index extends Component<{
         this.setState({ error: true });
       }
     };
+    getCategoryData();
     getCurrencyData();
   }
-
-  filters = ["WOMEN", "MEN", "KIDS"];
 
   selectFilter = (value: string) => {
     this.setState({ selectedFilter: value });
@@ -81,18 +103,19 @@ class index extends Component<{
         <Container>
           <div className="wrapper">
             <div className="filters">
-              {this.filters.map((filter, index) => {
+              {this.state.categories.map((category, index) => {
                 return (
                   <button
                     onClick={() => {
-                      this.selectFilter(filter);
+                      this.props.changeCategory(index);
                     }}
                     key={index}
                     className={
-                      this.state.selectedFilter === filter ? "active" : ""
+                      this.props.categoryIndex === index ? "active" : ""
                     }
                   >
-                    {filter}
+                    {category.name.charAt(0).toUpperCase() +
+                      category.name.slice(1)}
                   </button>
                 );
               })}

@@ -14,6 +14,14 @@ export const CATEGORY_QUERY = gql`
   query Query {
     categories {
       name
+    }
+  }
+`;
+
+export const ALL_ITEMS_QUERY = gql`
+  query Query {
+    categories {
+      name
       products {
         id
         name

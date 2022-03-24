@@ -39,12 +39,12 @@ export const cartReducer = (
 
   switch (action.type) {
     case ActionType.ADD_CART_ITEM:
-      if (action.payload.attributes) {
-        console.log("has attributes");
-      }
       //* If the item already exists
       for (let i = 0; i < state.cartItems.length; i++) {
-        if (state.cartItems[i].product === action.payload.product) {
+        if (
+          state.cartItems[i].product === action.payload.product &&
+          state.cartItems[i].selectedAttributes === action.payload.attributes
+        ) {
           const incrementedArray = [...state.cartItems];
           incrementedArray[i].quantity++;
 
