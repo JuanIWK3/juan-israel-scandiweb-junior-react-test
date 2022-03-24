@@ -56,6 +56,7 @@ export const Container = styled.div`
       border: none;
       font-family: "Raleway", serif;
       font-size: 16px;
+      cursor: pointer;
       &.active {
         border-bottom: 2px solid #5ece7b;
       }

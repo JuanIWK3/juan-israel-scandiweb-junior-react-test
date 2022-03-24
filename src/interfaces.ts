@@ -1,6 +1,7 @@
 export interface CartItem {
-  product: IProduct;
+  product: Product;
   quantity: number;
+  selectedAttributes: SelectedAttribute[];
 }
 
 export interface Data {
@@ -9,10 +10,10 @@ export interface Data {
 
 export interface CategoryElement {
   name: string;
-  products: IProduct[];
+  products: Product[];
 }
 
-export interface IProduct {
+export interface Product {
   name: string;
   inStock: boolean;
   gallery: string[];
@@ -29,6 +30,11 @@ export interface Attribute {
   name: string;
   type: Type;
   items: Item[];
+}
+
+export interface SelectedAttribute {
+  attribute: number;
+  item: number;
 }
 
 export interface Item {

@@ -1,5 +1,5 @@
 import { stat } from "fs/promises";
-import { CartItem } from "../../interfaces";
+import { CartItem, Product, SelectedAttribute } from "../../interfaces";
 import { Action, ActionType } from "../types";
 
 const initialState: { cartItems: CartItem[] } = { cartItems: [] };
@@ -8,11 +8,43 @@ export const cartReducer = (
   state: { cartItems: CartItem[] } = initialState,
   action: Action
 ) => {
+  const setAttributes = (
+    product: Product,
+    selectedAttrs: SelectedAttribute[] | undefined
+  ) => {
+    const selectedAttributes: SelectedAttribute[] = [];
+
+    if (selectedAttrs) {
+      for (let i = 0; i < product.attributes.length; i++) {
+        const attribute = product.attributes[i];
+
+        selectedAttributes.push({
+          attribute: selectedAttrs[i].attribute,
+          item: selectedAttrs[i].item,
+        });
+      }
+    } else {
+      for (let i = 0; i < product.attributes.length; i++) {
+        const attribute = product.attributes[i];
+
+        selectedAttributes.push({
+          attribute: 1,
+          item: 1,
+        });
+      }
+    }
+
+    return selectedAttributes;
+  };
+
   switch (action.type) {
     case ActionType.ADD_CART_ITEM:
+      if (action.payload.attributes) {
+        console.log("has attributes");
+      }
       //* If the item already exists
       for (let i = 0; i < state.cartItems.length; i++) {
-        if (state.cartItems[i].product.id === action.payload.id) {
+        if (state.cartItems[i].product === action.payload.product) {
           const incrementedArray = [...state.cartItems];
           incrementedArray[i].quantity++;
 
@@ -24,7 +56,14 @@ export const cartReducer = (
         ...state,
         cartItems: [
           ...state.cartItems,
-          { product: action.payload, quantity: 1 },
+          {
+            product: action.payload.product,
+            quantity: 1,
+            selectedAttributes: setAttributes(
+              action.payload.product,
+              action.payload.attributes
+            ),
+          },
         ],
       };
 

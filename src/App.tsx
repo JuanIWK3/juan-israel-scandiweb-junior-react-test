@@ -7,7 +7,7 @@ import { CartItem } from "./interfaces";
 import Cart from "./pages/Cart";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "./queries";
-import Product from "./pages/Product";
+import ProductPage from "./pages/Product";
 
 class App extends React.Component {
   state = {
@@ -21,7 +21,7 @@ class App extends React.Component {
           <Router>
             <Routes>
               <Route path="products">
-                <Route path=":productId" element={<Product />}></Route>
+                <Route path=":productId" element={<ProductPage />}></Route>
               </Route>
               <Route path="/" element={<Category />}></Route>
               <Route path="/cart" element={<Cart />}></Route>

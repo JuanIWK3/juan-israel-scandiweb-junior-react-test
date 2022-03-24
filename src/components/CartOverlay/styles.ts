@@ -78,6 +78,10 @@ export const Container = styled.div`
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
+
+      img {
+        cursor: pointer;
+      }
     }
     figure {
       height: 137px;

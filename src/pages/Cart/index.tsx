@@ -54,7 +54,22 @@ class Cart extends Component<{
                     }
                     {cartItem.product.prices[this.props.currencyIndex].amount}
                   </p>
-                  <div>sm{/* //! attributes */}</div>
+                  {cartItem.product.attributes.map((attribute, index) => {
+                    return (
+                      <div className="attr" key={attribute.id}>
+                        <div className="attr-name">
+                          {cartItem.product.attributes[index].name}:
+                        </div>
+                        <div className="attr-value">
+                          {
+                            cartItem.product.attributes[index].items[
+                              cartItem.selectedAttributes[index].item
+                            ].displayValue
+                          }
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
                 <div className="wrapper">
                   <div className="quantity">

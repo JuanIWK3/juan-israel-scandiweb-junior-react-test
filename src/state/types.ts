@@ -1,4 +1,4 @@
-import { IProduct } from "../interfaces";
+import { Product, SelectedAttribute } from "../interfaces";
 
 export enum ActionType {
   CHANGE_CURRENCY = "change-currency",
@@ -12,7 +12,7 @@ interface IChangeCurrency {
 }
 interface IAddCartItem {
   type: ActionType.ADD_CART_ITEM;
-  payload: IProduct;
+  payload: { product: Product; attributes?: SelectedAttribute[] };
 }
 interface IIncrementCartItem {
   type: ActionType.INCREMENT_CART_ITEM;

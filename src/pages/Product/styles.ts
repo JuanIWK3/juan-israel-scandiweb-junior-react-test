@@ -120,6 +120,7 @@ export const Container = styled.div`
         background-position: center;
         background-size: contain;
         background-repeat: no-repeat;
+        cursor: pointer;
       }
     }
     .selected-image {

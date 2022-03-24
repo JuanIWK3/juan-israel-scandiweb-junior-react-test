@@ -1,5 +1,5 @@
 import { Dispatch } from "redux";
-import { IProduct } from "../../interfaces";
+import { Product, SelectedAttribute } from "../../interfaces";
 import { State } from "../reducers";
 import { ActionType } from "../types";
 
@@ -12,8 +12,11 @@ export const mapDispatchToProps = (dispatch: Dispatch) => {
     changeCurrency: (currencyIndex: number) => {
       dispatch({ type: ActionType.CHANGE_CURRENCY, payload: currencyIndex });
     },
-    addCartItem: (product: IProduct) => {
-      dispatch({ type: ActionType.ADD_CART_ITEM, payload: product });
+    addCartItem: (product: Product, attributes?: SelectedAttribute[]) => {
+      dispatch({
+        type: ActionType.ADD_CART_ITEM,
+        payload: { product: product, attributes: attributes },
+      });
     },
     incrementCartItem: (index: number) => {
       dispatch({ type: ActionType.INCREMENT_CART_ITEM, payload: index });

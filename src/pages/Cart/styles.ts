@@ -48,7 +48,7 @@ export const Container = styled.div`
     display: flex;
     justify-content: space-between;
     width: 100%;
-    height: 186px;
+    min-height: 186px;
 
     .wrapper {
       display: flex;
@@ -56,24 +56,37 @@ export const Container = styled.div`
     .content {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
       width: 300px;
+      justify-content: space-between;
 
       .brand {
         font-family: Raleway;
         font-weight: 600;
         font-size: 30px;
+        margin-bottom: 16px;
       }
 
       .name {
         font-family: Raleway;
         font-weight: 400;
         font-size: 30px;
+        margin-bottom: 16px;
+        margin-bottom: 16px;
       }
       .price {
         font-family: Raleway;
         font-weight: 700;
         font-size: 24px;
+        margin-bottom: 16px;
+      }
+      .attr {
+        display: flex;
+        margin-bottom: 4px;
+        .attr-name {
+          font-family: Roboto;
+          font-weight: 500;
+          margin-right: 8px;
+        }
       }
     }
 

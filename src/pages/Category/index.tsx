@@ -3,19 +3,30 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
 import { cartLightImg } from "../../assets";
+
 import Header from "../../components/Header";
-import { IProduct, CartItem, CategoryElement } from "../../interfaces";
+
+import {
+  Product,
+  CartItem,
+  CategoryElement,
+  Attribute,
+  SelectedAttribute,
+} from "../../interfaces";
+
 import { CATEGORY_QUERY, client } from "../../queries";
+
 import {
   mapDispatchToProps,
   mapStateToProps,
 } from "../../state/actions/actions";
+
 import { Container } from "./styles";
 
 class Category extends Component<{
   currencyIndex: number;
   cart: { cartItems: CartItem[] };
-  addCartItem: (product: IProduct) => void;
+  addCartItem: (product: Product) => void;
 }> {
   state = {
     loading: true,
@@ -56,7 +67,6 @@ class Category extends Component<{
       return (
         <Container>
           <Header toggle={this.toggleCartOverlay as () => {}} />
-          <Link to="/cart">GO TO CART</Link>
           {this.state.overlayVisible && <div className="dim-overlay"></div>}
           {this.state.categories.map((category) => {
             return (

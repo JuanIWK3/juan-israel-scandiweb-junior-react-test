@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { CartItem, Currency } from "../../interfaces";
+import { Attribute, CartItem, Currency, Product } from "../../interfaces";
 import CartOverlay from "../CartOverlay";
 
 import { Container } from "./styles";
@@ -44,6 +44,7 @@ class index extends Component<{
     selectedCurrency: {} as Currency,
     currencyMenuShow: false,
     closeCart: false,
+    selectedFilter: "WOMEN",
   };
 
   componentDidMount() {
@@ -64,6 +65,12 @@ class index extends Component<{
     getCurrencyData();
   }
 
+  filters = ["WOMEN", "MEN", "KIDS"];
+
+  selectFilter = (value: string) => {
+    this.setState({ selectedFilter: value });
+  };
+
   render() {
     if (this.state.loading) {
       return <Container>Loading...</Container>;
@@ -74,9 +81,21 @@ class index extends Component<{
         <Container>
           <div className="wrapper">
             <div className="filters">
-              <button className="active">WOMEN</button>
-              <button>MEN</button>
-              <button>KIDS</button>
+              {this.filters.map((filter, index) => {
+                return (
+                  <button
+                    onClick={() => {
+                      this.selectFilter(filter);
+                    }}
+                    key={index}
+                    className={
+                      this.state.selectedFilter === filter ? "active" : ""
+                    }
+                  >
+                    {filter}
+                  </button>
+                );
+              })}
             </div>
 
             <div className="logo">

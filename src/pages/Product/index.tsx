@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Header from "../../components/Header";
-import { CartItem, IProduct } from "../../interfaces";
+import { CartItem, Product, SelectedAttribute } from "../../interfaces";
 import { client, PRODUCT_QUERY } from "../../queries";
 import {
   mapDispatchToProps,
@@ -9,59 +9,28 @@ import {
 } from "../../state/actions/actions";
 import { AttrButton, Container } from "./styles";
 
-class Product extends Component<{
+class ProductPage extends Component<{
   currencyIndex: number;
   cart: { cartItems: CartItem[] };
+  addCartItem: (product: Product, attributes?: SelectedAttribute[]) => void;
 }> {
   state = {
     loading: true,
     error: false,
-    product: {} as IProduct,
+    product: {} as Product,
     overlayVisible: false,
-    selectedImage: "",
-    selectedColor: "Select",
-    selectedCapacity: "Select",
+    selectedImage: 0,
+    selectedAttributes: [] as SelectedAttribute[],
+  };
+
+  changeSelectedAttr = (attr: number, item: number) => {
+    const selectedAttributes = this.state.selectedAttributes;
+    selectedAttributes[attr].item = item;
+    this.setState({ selectedAttributes });
   };
 
   toggleCartOverlay = () => {
     this.setState({ overlayVisible: !this.state.overlayVisible });
-  };
-
-  addToCart = (product: IProduct) => {
-    let tempCartItems = this.props.cart.cartItems;
-
-    if (tempCartItems.length === 0) {
-      tempCartItems.push({ product: product, quantity: 1 });
-
-      localStorage.setItem(
-        "cartItems",
-        JSON.stringify(this.props.cart.cartItems)
-      );
-
-      return;
-    }
-
-    for (let i = 0; i < tempCartItems.length; i++) {
-      if (tempCartItems[i].product.id === product.id) {
-        tempCartItems[i].quantity += 1;
-
-        localStorage.setItem(
-          "cartItems",
-          JSON.stringify(this.props.cart.cartItems)
-        );
-
-        return;
-      }
-    }
-
-    tempCartItems.push({ product: product, quantity: 1 });
-
-    localStorage.setItem(
-      "cartItems",
-      JSON.stringify(this.props.cart.cartItems)
-    );
-
-    return;
   };
 
   componentDidMount() {
@@ -75,10 +44,23 @@ class Product extends Component<{
           },
         });
 
+        const defaultAttr = (product: Product) => {
+          const selectedAttributes: SelectedAttribute[] = [];
+          for (let i = 0; i < product.attributes.length; i++) {
+            selectedAttributes.push({
+              attribute: 0,
+              item: 0,
+            });
+          }
+          return selectedAttributes;
+        };
+
         //* Before Loading */
 
         this.setState({ product: response.data.product as Product });
+        this.setState({ selectedAttributes: defaultAttr(this.state.product) });
         this.setState({ selectedImage: this.state.product.gallery[0] });
+        this.setState({});
 
         //* === */
 
@@ -108,6 +90,9 @@ class Product extends Component<{
                     return (
                       <figure key={index}>
                         <div
+                          onClick={() => {
+                            this.setState({ selectedImage: image });
+                          }}
                           className="image"
                           style={{ backgroundImage: `url(${image})` }}
                         />
@@ -126,7 +111,7 @@ class Product extends Component<{
                 <div className="brand">{this.state.product.brand}</div>
                 <div className="name">{this.state.product.name}</div>
                 <div className="options">
-                  {this.state.product.attributes.map((attribute) => {
+                  {this.state.product.attributes.map((attribute, attrIndex) => {
                     return (
                       <div
                         key={attribute.name}
@@ -134,38 +119,24 @@ class Product extends Component<{
                       >
                         <div className="attr-name">
                           <p>{attribute.name}</p>
-                          {attribute.name == "Color" && (
-                            <p className="selected-value">
-                              {" "}
-                              {`: ${this.state.selectedColor}`}
-                            </p>
-                          )}
-                          {attribute.name == "Capacity" && (
-                            <p className="selected-value">
-                              {" "}
-                              {`: ${this.state.selectedCapacity}`}
-                            </p>
-                          )}
+
+                          <p className="selected-value">
+                            {" "}
+                            {`: ${
+                              attribute.items[
+                                this.state.selectedAttributes[attrIndex].item
+                              ].displayValue
+                            }`}
+                          </p>
                         </div>
                         <div className="attr-values">
-                          {attribute.items.map((item, index) => {
+                          {attribute.items.map((item, itemIndex) => {
                             return (
                               <AttrButton
                                 attrColor={item.value}
-                                key={index}
+                                key={itemIndex}
                                 onClick={() => {
-                                  switch (attribute.name) {
-                                    case "Color":
-                                      this.setState({
-                                        selectedColor: item.displayValue,
-                                      });
-                                      break;
-                                    case "Capacity":
-                                      this.setState({
-                                        selectedCapacity: item.displayValue,
-                                      });
-                                      break;
-                                  }
+                                  this.changeSelectedAttr(attrIndex, itemIndex);
                                 }}
                                 className={
                                   attribute.type == "swatch"
@@ -196,9 +167,10 @@ class Product extends Component<{
                 </div>
                 <button
                   onClick={() => {
-                    if (this.state.product) {
-                      this.addToCart(this.state.product);
-                    }
+                    this.props.addCartItem(
+                      this.state.product,
+                      this.state.selectedAttributes
+                    );
                   }}
                   className={
                     this.state.product.inStock
@@ -218,4 +190,4 @@ class Product extends Component<{
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Product);
+export default connect(mapStateToProps, mapDispatchToProps)(ProductPage);
