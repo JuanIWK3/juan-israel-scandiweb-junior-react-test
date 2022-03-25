@@ -18,6 +18,7 @@ export const Container = styled.div`
 
     .category-button {
       display: none;
+      cursor: pointer;
       button {
         padding: 8px;
       }
@@ -32,6 +33,7 @@ export const Container = styled.div`
       left: 0;
       background-color: #fff;
       box-shadow: 0px 0px 40px 0px #ddd;
+      cursor: pointer;
 
       .category-option {
         display: flex;
