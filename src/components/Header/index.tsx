@@ -1,4 +1,6 @@
-import React, { Component, PointerEvent } from 'react';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { CartItem, CategoryElement, Currency } from '../../interfaces';
 import CartOverlay from '../CartOverlay';
 
@@ -10,60 +12,27 @@ import {
   currencyCloseImg,
   hamImg,
 } from '../../assets';
-import { Link } from 'react-router-dom';
 import { CATEGORY_QUERY, client, CURRENCY_QUERY } from '../../queries';
-import { connect } from 'react-redux';
 import {
   mapDispatchToProps,
   mapStateToProps,
 } from '../../state/actions/actions';
 
 class index extends Component<{
-  toggle: () => {};
+  toggle: () => void;
   cart: { cartItems: CartItem[] };
   currencyIndex: number;
   categoryIndex: number;
-  changeCurrency: any;
-  changeCategory: (index: number) => void;
+  changeCurrency: (currIndex: number) => void;
+  changeCategory: (catIndex: number) => void;
 }> {
   currencyItemRef = React.createRef<HTMLDivElement>();
-
-  handleClickOutside = (event: MouseEvent) => {
-    if (this.state.currencyMenuShow) {
-      if (
-        event.target !== this.currencyItemRef.current &&
-        event.target !== this.currencyItemRef.current?.parentElement
-      ) {
-        this.toggleCurrencyMenu();
-      }
-    }
-  };
-
-  toggleCurrencyMenu = () => {
-    this.setState({ currencyMenuShow: !this.state.currencyMenuShow });
-  };
-
-  toggleCategoryMenu = () => {
-    this.setState({ showCategories: !this.state.showCategories });
-  };
-
-  selectCurrency = (currency: Currency) => {
-    this.setState({
-      selectedCurrency: {
-        label: currency.label,
-        symbol: currency.symbol,
-      },
-    });
-  };
 
   state = {
     loading: true,
     error: false,
     currencies: [] as Currency[],
-    selectedCurrency: {} as Currency,
     currencyMenuShow: false,
-    closeCart: false,
-    selectedFilter: this.props.categoryIndex,
     categories: [] as CategoryElement[],
     showCategories: false,
   };
@@ -78,7 +47,6 @@ class index extends Component<{
         this.setState({
           categories: response.data.categories as CategoryElement,
         });
-        console.log(this.state.categories);
       } catch (error) {
         this.setState({ error: true });
       }
@@ -107,113 +75,149 @@ class index extends Component<{
     document.removeEventListener('mousedown', this.handleClickOutside);
   }
 
-  selectFilter = (value: string) => {
-    this.setState({ selectedFilter: value });
+  handleClickOutside = (event: MouseEvent) => {
+    const { currencyMenuShow } = this.state;
+    if (currencyMenuShow) {
+      if (
+        event.target !== this.currencyItemRef.current &&
+        event.target !== this.currencyItemRef.current?.parentElement
+      ) {
+        this.toggleCurrencyMenu();
+      }
+    }
+  };
+
+  toggleCurrencyMenu = () => {
+    const { currencyMenuShow } = this.state;
+    this.setState({ currencyMenuShow: !currencyMenuShow });
+  };
+
+  toggleCategoryMenu = () => {
+    const { showCategories } = this.state;
+    this.setState({ showCategories });
   };
 
   render() {
-    if (this.state.loading) {
-      return <Container>Loading...</Container>;
-    } else if (this.state.error) {
-      return <Container>Loading Error</Container>;
-    } else {
-      return (
-        <Container>
-          <div className="wrapper">
-            <div className="filters">
-              {this.state.categories.map((category, index) => {
-                return (
-                  <button
-                    onClick={() => {
-                      this.props.changeCategory(index);
-                    }}
-                    key={index}
-                    className={
-                      this.props.categoryIndex === index ? 'active' : ''
-                    }
-                  >
-                    {category.name.charAt(0).toUpperCase() +
-                      category.name.slice(1)}
-                  </button>
-                );
-              })}
-            </div>
+    const { loading } = this.state;
+    const { error } = this.state;
+    const { categories } = this.state;
+    const { changeCategory } = this.props;
+    const { changeCurrency } = this.props;
+    const { categoryIndex } = this.props;
+    const { currencyIndex } = this.props;
+    const { showCategories } = this.state;
+    const { currencies } = this.state;
+    const { currencyMenuShow } = this.state;
+    const { toggle } = this.props;
 
-            <div className="category-button" onClick={this.toggleCategoryMenu}>
-              <img src={hamImg} alt="ham" />
-              {this.state.showCategories && (
-                <div className="categories-menu">
-                  {this.state.categories.map((category, index) => {
+    if (loading) {
+      return <Container>Loading...</Container>;
+    }
+    if (error) {
+      return <Container>Loading Error</Container>;
+    }
+
+    return (
+      <Container>
+        <div className="wrapper">
+          <div className="filters">
+            {categories.map((category, catIndex) => {
+              return (
+                <button
+                  type="button"
+                  onClick={() => {
+                    changeCategory(catIndex);
+                  }}
+                  key={catIndex}
+                  className={categoryIndex === catIndex ? 'active' : ''}
+                >
+                  {category.name.charAt(0).toUpperCase() +
+                    category.name.slice(1)}
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            type="button"
+            className="category-button"
+            onClick={this.toggleCategoryMenu}
+          >
+            <img src={hamImg} alt="ham" />
+            {showCategories && (
+              <div className="categories-menu">
+                {categories.map((category, catIndex) => {
+                  return (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        changeCategory(catIndex);
+                      }}
+                      key={catIndex}
+                      className="category-option"
+                    >
+                      <p>
+                        {category.name.charAt(0).toUpperCase() +
+                          category.name.slice(1)}
+                      </p>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </button>
+
+          <div className="logo">
+            <Link to="/">
+              <img src={logoImg} alt="" />
+            </Link>
+          </div>
+
+          <div className="currency-cart">
+            <div
+              className="currency-button"
+              onClick={() => {
+                this.toggleCurrencyMenu();
+              }}
+            >
+              {currencies[currencyIndex].symbol}
+              {currencyMenuShow ? (
+                <img src={currencyOpenImg} alt="" />
+              ) : (
+                <img src={currencyCloseImg} alt="" />
+              )}
+              {currencyMenuShow && (
+                <div ref={this.currencyItemRef} className="currency-menu">
+                  {currencies.map((currency, curIndex) => {
                     return (
-                      <div
+                      <button
+                        type="button"
                         onClick={() => {
-                          this.props.changeCategory(index);
+                          changeCurrency(curIndex);
                         }}
-                        key={index}
-                        className="category-option"
+                        className="currency"
+                        key={curIndex}
                       >
-                        <p>
-                          {category.name.charAt(0).toUpperCase() +
-                            category.name.slice(1)}
-                        </p>
-                      </div>
+                        <p>{currency.symbol}</p>
+                        <p>{currency.label}</p>
+                      </button>
                     );
                   })}
                 </div>
               )}
             </div>
 
-            <div className="logo">
-              <Link to="/">
-                <img src={logoImg} alt="" />
-              </Link>
-            </div>
-
-            <div className="currency-cart">
-              <div
-                className="currency-button"
-                onClick={() => {
-                  this.toggleCurrencyMenu();
-                }}
-              >
-                {this.state.currencies[this.props.currencyIndex].symbol}
-                {this.state.currencyMenuShow ? (
-                  <img src={currencyOpenImg} alt="" />
-                ) : (
-                  <img src={currencyCloseImg} alt="" />
-                )}
-                {this.state.currencyMenuShow && (
-                  <div ref={this.currencyItemRef} className="currency-menu">
-                    {this.state.currencies.map((currency, index) => {
-                      return (
-                        <div
-                          onClick={() => {
-                            this.props.changeCurrency(index);
-                          }}
-                          className="currency"
-                          key={index}
-                        >
-                          <p>{currency.symbol}</p>
-                          <p>{currency.label}</p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-              <div className="cart">
-                <CartOverlay
-                  currencyOpen={this.state.currencyMenuShow}
-                  toggleCurrencyMenu={this.toggleCurrencyMenu}
-                  toggleDim={this.props.toggle}
-                />
-              </div>
+            <div className="cart">
+              <CartOverlay
+                currencyOpen={currencyMenuShow}
+                toggleCurrencyMenu={this.toggleCurrencyMenu}
+                toggleDim={toggle}
+              />
             </div>
           </div>
-        </Container>
-      );
-    }
+        </div>
+      </Container>
+    );
   }
 }
 

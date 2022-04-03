@@ -1,10 +1,10 @@
-import { Action, ActionType } from "../types";
+import { Action, ActionType } from '../types';
 
-const initialState: number = 0;
+const initialState = 0;
 
 export const categoryReducer = (
   state: number = initialState,
-  action: Action
+  action: Action,
 ) => {
   switch (action.type) {
     case ActionType.CHANGE_CATEGORY:

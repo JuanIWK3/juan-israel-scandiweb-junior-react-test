@@ -1,7 +1,7 @@
-import { Dispatch } from "redux";
-import { Product, SelectedAttribute } from "../../interfaces";
-import { State } from "../reducers";
-import { ActionType } from "../types";
+import { Dispatch } from 'redux';
+import { Product, SelectedAttribute } from '../../interfaces';
+import { State } from '../reducers';
+import { ActionType } from '../types';
 
 export const mapStateToProps = (state: State) => {
   return {
@@ -22,7 +22,7 @@ export const mapDispatchToProps = (dispatch: Dispatch) => {
     addCartItem: (product: Product, attributes?: SelectedAttribute[]) => {
       dispatch({
         type: ActionType.ADD_CART_ITEM,
-        payload: { product: product, attributes: attributes },
+        payload: { product, attributes },
       });
     },
     incrementCartItem: (index: number) => {

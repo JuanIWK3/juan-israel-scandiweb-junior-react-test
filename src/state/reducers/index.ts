@@ -1,7 +1,7 @@
-import { combineReducers } from "redux";
-import { cartReducer } from "./cartReducer";
-import { categoryReducer } from "./categoryReducer";
-import { currencyReducer } from "./currencyReducer";
+import { combineReducers } from 'redux';
+import { cartReducer } from './cartReducer';
+import { categoryReducer } from './categoryReducer';
+import { currencyReducer } from './currencyReducer';
 
 export const reducers = combineReducers({
   currency: currencyReducer,

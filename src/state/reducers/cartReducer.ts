@@ -1,15 +1,16 @@
-import { CartItem, Product, SelectedAttribute } from "../../interfaces";
-import { Action, ActionType } from "../types";
+/* eslint-disable no-case-declarations */
+import { CartItem, Product, SelectedAttribute } from '../../interfaces';
+import { Action, ActionType } from '../types';
 
 const initialState: { cartItems: CartItem[] } = { cartItems: [] };
 
 export const cartReducer = (
   state: { cartItems: CartItem[] } = initialState,
-  action: Action
+  action: Action,
 ) => {
   const setAttributes = (
     product: Product,
-    selectedAttrs: SelectedAttribute[] | undefined
+    selectedAttrs: SelectedAttribute[] | undefined,
   ) => {
     const selectedAttributes: SelectedAttribute[] = [];
 
@@ -41,7 +42,7 @@ export const cartReducer = (
           state.cartItems[i].selectedAttributes === action.payload.attributes
         ) {
           const incrementedArray = [...state.cartItems];
-          incrementedArray[i].quantity++;
+          incrementedArray[i].quantity += 1;
 
           return { ...state, cartItems: incrementedArray };
         }
@@ -56,7 +57,7 @@ export const cartReducer = (
             quantity: 1,
             selectedAttributes: setAttributes(
               action.payload.product,
-              action.payload.attributes
+              action.payload.attributes,
             ),
           },
         ],
@@ -64,7 +65,7 @@ export const cartReducer = (
 
     case ActionType.INCREMENT_CART_ITEM:
       const incrementedArray = [...state.cartItems];
-      incrementedArray[action.payload].quantity++;
+      incrementedArray[action.payload].quantity += 1;
 
       return { ...state, cartItems: incrementedArray };
 
@@ -79,7 +80,7 @@ export const cartReducer = (
 
       //* Decrement quantity
       const decrementedArray = [...state.cartItems];
-      decrementedArray[action.payload].quantity--;
+      decrementedArray[action.payload].quantity -= 1;
 
       return { ...state, cartItems: decrementedArray };
 

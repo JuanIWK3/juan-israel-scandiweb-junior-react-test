@@ -1,11 +1,11 @@
-import { Product, SelectedAttribute } from "../interfaces";
+import { Product, SelectedAttribute } from '../interfaces';
 
 export enum ActionType {
-  CHANGE_CURRENCY = "change-currency",
-  CHANGE_CATEGORY = "change-category",
-  ADD_CART_ITEM = "add-cart-item",
-  INCREMENT_CART_ITEM = "increment-cart-item",
-  DECREMENT_CART_ITEM = "decrement-cart-item",
+  CHANGE_CURRENCY = 'change-currency',
+  CHANGE_CATEGORY = 'change-category',
+  ADD_CART_ITEM = 'add-cart-item',
+  INCREMENT_CART_ITEM = 'increment-cart-item',
+  DECREMENT_CART_ITEM = 'decrement-cart-item',
 }
 
 interface IChangeCategory {

@@ -17,6 +17,13 @@ import {
 
 import { Container } from './styles';
 
+interface MyState {
+  loading: boolean;
+  error: boolean;
+  categories: CategoryElement[];
+  overlayVisible: boolean;
+}
+
 class Category extends Component<{
   currencyIndex: number;
   categoryIndex: number;
@@ -24,15 +31,11 @@ class Category extends Component<{
   cart: { cartItems: CartItem[] };
   addCartItem: (product: Product) => void;
 }> {
-  state = {
+  state: MyState = {
     loading: true,
     error: false,
-    categories: [] as CategoryElement[],
+    categories: [],
     overlayVisible: false,
-  };
-
-  toggleCartOverlay = () => {
-    this.setState({ overlayVisible: !this.state.overlayVisible });
   };
 
   componentDidMount() {
@@ -45,7 +48,6 @@ class Category extends Component<{
         this.setState({
           categories: response.data.categories as CategoryElement,
         });
-        console.log(this.state.categories);
 
         this.setState({ loading: response.loading });
       } catch (error) {
@@ -55,82 +57,87 @@ class Category extends Component<{
     getProductData();
   }
 
+  toggleCartOverlay = () => {
+    this.setState((prevState: MyState) => ({
+      overlayVisible: !prevState.overlayVisible,
+    }));
+  };
+
   render() {
     if (this.state.loading) {
       return <Container>Loading...</Container>;
-    } else if (this.state.error) {
-      return <Container>Loading Error</Container>;
-    } else {
-      return (
-        <Container>
-          <Header toggle={this.toggleCartOverlay as () => {}} />
-          {this.state.overlayVisible && <div className="dim-overlay"></div>}
-
-          <div
-            className="category"
-            key={this.state.categories[this.props.categoryIndex].name}
-          >
-            <h1 className="category-name">
-              {this.state.categories[this.props.categoryIndex].name
-                .charAt(0)
-                .toUpperCase() +
-                this.state.categories[this.props.categoryIndex].name.slice(1)}
-            </h1>
-            <div className="products">
-              {this.state.categories[this.props.categoryIndex].products.map(
-                (product) => {
-                  return (
-                    <div className="product" key={product.id}>
-                      <figure
-                        className={!product.inStock ? 'out-of-stock' : ''}
-                      >
-                        {!product.inStock && (
-                          <Link to={`/products/${product.id}`}>
-                            <div className="out-of-stock">OUT OF STOCK</div>
-                          </Link>
-                        )}
-                        <div
-                          className="circle"
-                          onClick={() => {
-                            if (product.inStock) {
-                              this.props.addCartItem(product);
-                            }
-                          }}
-                        >
-                          <img src={cartLightImg} alt="" />
-                        </div>
-                        <Link to={`/products/${product.id}`}>
-                          <div
-                            className="product-image"
-                            style={{
-                              backgroundImage: `url(${product.gallery[0]}`,
-                            }}
-                          ></div>
-                        </Link>
-                      </figure>
-                      <Link to={`/products/${product.id}`}>
-                        <div className="content">
-                          <p className="name">{`${product.brand} ${product.name}`}</p>
-                          {product.category}
-
-                          <p className="price">
-                            {
-                              product.prices[this.props.currencyIndex].currency
-                                .symbol
-                            }
-                            {product.prices[this.props.currencyIndex].amount}
-                          </p>
-                        </div>
-                      </Link>
-                    </div>
-                  );
-                }
-              )}
-            </div>
-          </div>
-        </Container>
-      );
     }
+    if (this.state.error) {
+      return <Container>Loading Error</Container>;
+    }
+    return (
+      <Container>
+        <Header toggle={this.toggleCartOverlay} />
+        {this.state.overlayVisible && <div className="dim-overlay" />}
+
+        <div
+          className="category"
+          key={this.state.categories[this.props.categoryIndex].name}
+        >
+          <h1 className="category-name">
+            {this.state.categories[this.props.categoryIndex].name
+              .charAt(0)
+              .toUpperCase() +
+              this.state.categories[this.props.categoryIndex].name.slice(1)}
+          </h1>
+          <div className="products">
+            {this.state.categories[this.props.categoryIndex].products.map(
+              (product) => {
+                return (
+                  <div className="product" key={product.id}>
+                    <figure className={!product.inStock ? 'out-of-stock' : ''}>
+                      {!product.inStock && (
+                        <Link to={`/products/${product.id}`}>
+                          <div className="out-of-stock">OUT OF STOCK</div>
+                        </Link>
+                      )}
+                      <button
+                        type="button"
+                        className="circle"
+                        onClick={() => {
+                          if (product.inStock) {
+                            this.props.addCartItem(product);
+                          }
+                        }}
+                      >
+                        <img src={cartLightImg} alt="" />
+                      </button>
+                      <Link to={`/products/${product.id}`}>
+                        <div
+                          className="product-image"
+                          style={{
+                            backgroundImage: `url(${product.gallery[0]}`,
+                          }}
+                        />
+                      </Link>
+                    </figure>
+                    <Link to={`/products/${product.id}`}>
+                      <div className="content">
+                        <p className="name">{`${product.brand} ${product.name}`}</p>
+                        {product.category}
+
+                        <p className="price">
+                          {
+                            product.prices[this.props.currencyIndex].currency
+                              .symbol
+                          }
+                          {product.prices[this.props.currencyIndex].amount}
+                        </p>
+                      </div>
+                    </Link>
+                  </div>
+                );
+              },
+            )}
+          </div>
+        </div>
+      </Container>
+    );
   }
 }
 

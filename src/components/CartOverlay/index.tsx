@@ -12,7 +12,7 @@ import { Badge, Container, Icon } from './styles';
 
 interface IProps {
   cart: { cartItems: CartItem[] };
-  toggleDim: () => {};
+  toggleDim: () => void;
   currencyOpen: boolean;
   toggleCurrencyMenu: () => void;
   currencyIndex: number;
@@ -21,53 +21,11 @@ interface IProps {
 }
 
 class CartOverlay extends Component<IProps> {
+  cartRef = createRef<HTMLDivElement>();
+
   state = {
     total: '',
     overlayVisible: false,
-  };
-
-  cartRef = createRef<HTMLDivElement>();
-
-  handleClickOutside = (event: MouseEvent) => {
-    if (this.state.overlayVisible) {
-      if (event.target !== this.cartRef.current) {
-        this.toggleCartOverlay();
-        this.props.toggleDim();
-      }
-    }
-  };
-
-  calculateTotal = () => {
-    this.setState({ total: '' });
-
-    let sum = 0;
-    if (!this.props.cart.cartItems || !this.props.cart.cartItems.length) {
-      return;
-    }
-
-    for (let i = 0; i < this.props.cart.cartItems.length; i++) {
-      sum +=
-        this.props.cart.cartItems[i].product.prices[this.props.currencyIndex]
-          .amount * this.props.cart.cartItems[i].quantity;
-    }
-
-    const symbol: string = this.props.cart.cartItems[0].product.prices[this.props.currencyIndex].currency.symbol.toString()
-    
-    this.setState({
-      total: `${symbol} ${sum.toFixed(2)}`,
-    });
-  };
-
-  toggleCartOverlay = () => {
-    if (!this.state.overlayVisible && this.props.currencyOpen) {
-      this.props.toggleCurrencyMenu();
-    }
-    if (!this.state.overlayVisible) {
-      this.calculateTotal();
-    }
-    this.setState({
-      overlayVisible: !this.state.overlayVisible,
-    });
   };
 
   componentDidMount() {
@@ -75,116 +33,178 @@ class CartOverlay extends Component<IProps> {
     document.addEventListener('mousedown', this.handleClickOutside);
   }
 
+  componentDidUpdate() {
+    const { overlayVisible } = this.state;
+    const { currencyOpen } = this.props;
+    const { toggleDim } = this.props;
+    if (overlayVisible && currencyOpen) {
+      this.toggleCartOverlay();
+      toggleDim();
+    }
+  }
+
   componentWillUnmount() {
     document.removeEventListener('mousedown', this.handleClickOutside);
   }
 
-  componentDidUpdate() {
-    if (this.state.overlayVisible && this.props.currencyOpen) {
-      this.toggleCartOverlay();
-      this.props.toggleDim();
+  handleClickOutside = (event: MouseEvent) => {
+    const { overlayVisible } = this.state;
+    const { toggleDim } = this.props;
+    if (overlayVisible) {
+      if (event.target !== this.cartRef.current) {
+        this.toggleCartOverlay();
+        toggleDim();
+      }
     }
-  }
+  };
+
+  calculateTotal = () => {
+    const { cart } = this.props;
+    const { currencyIndex } = this.props;
+    this.setState({ total: '' });
+
+    let sum = 0;
+    if (!cart.cartItems || !cart.cartItems.length) {
+      return;
+    }
+
+    for (let i = 0; i < cart.cartItems.length; i += 1) {
+      sum +=
+        cart.cartItems[i].product.prices[currencyIndex].amount *
+        cart.cartItems[i].quantity;
+    }
+
+    const symbol: string =
+      cart.cartItems[0].product.prices[
+        currencyIndex
+      ].currency.symbol.toString();
+
+    this.setState({
+      total: `${symbol} ${sum.toFixed(2)}`,
+    });
+  };
+
+  toggleCartOverlay = () => {
+    const { overlayVisible } = this.state;
+    const { currencyOpen } = this.props;
+    const { toggleCurrencyMenu } = this.props;
+    if (!overlayVisible && currencyOpen) {
+      toggleCurrencyMenu();
+    }
+    if (!overlayVisible) {
+      this.calculateTotal();
+    }
+    this.setState({
+      overlayVisible: !overlayVisible,
+    });
+  };
 
   render() {
+    const { cart } = this.props;
+    const { overlayVisible } = this.state;
+    const { currencyIndex } = this.props;
+    const { toggleDim } = this.props;
+    const { total } = this.state;
+    const { incrementCartItem } = this.props;
+    const { decrementCartItem } = this.props;
+
     return (
       <div style={{ position: 'relative' }}>
         <Icon>
           <Badge>
-            <div>{this.props.cart.cartItems.length}</div>
+            <div>{cart.cartItems.length}</div>
           </Badge>
           <img
             style={{ cursor: 'pointer', padding: '5px 11px', zIndex: 2 }}
             onClick={() => {
-              this.props.toggleDim();
+              toggleDim();
               this.toggleCartOverlay();
             }}
             src={cartImg}
             alt=""
           />
         </Icon>
-        {this.state.overlayVisible && (
-          <>
-            <Container ref={this.cartRef}>
-              <p className="title">
-                <strong>My Bag</strong>, {this.props.cart.cartItems.length}{' '}
-                {this.props.cart.cartItems.length === 1 ? 'item' : 'items'}{' '}
-              </p>
-              {this.props.cart.cartItems.map((cartItem, index) => (
-                <div className="cart-item" key={index}>
-                  <div className="content">
-                    <div className="brand-name">
-                      <p>{cartItem.product.brand}</p>
-                      <p>{cartItem.product.name}</p>
-                    </div>
-                    <p className="price">
-                      {
-                        cartItem.product.prices[this.props.currencyIndex]
-                          .currency.symbol
-                      }
-                      {cartItem.product.prices[this.props.currencyIndex].amount}
-                    </p>
-                    {cartItem.product.attributes.map((attribute, index) => {
-                      return (
-                        <div className="attr" key={attribute.id}>
-                          <div className="attr-name">
-                            {`${cartItem.product.attributes[index].name}:
+        {overlayVisible && (
+          <Container ref={this.cartRef}>
+            <p className="title">
+              <strong>My Bag</strong>, {cart.cartItems.length}{' '}
+              {cart.cartItems.length === 1 ? 'item' : 'items'}{' '}
+            </p>
+            {cart.cartItems.map((cartItem, index) => (
+              <div className="cart-item" key={index}>
+                <div className="content">
+                  <div className="brand-name">
+                    <p>{cartItem.product.brand}</p>
+                    <p>{cartItem.product.name}</p>
+                  </div>
+                  <p className="price">
+                    {cartItem.product.prices[currencyIndex].currency.symbol}
+                    {cartItem.product.prices[currencyIndex].amount}
+                  </p>
+                  {cartItem.product.attributes.map((attribute) => {
+                    return (
+                      <div className="attr" key={attribute.id}>
+                        <div className="attr-name">
+                          {`${cartItem.product.attributes[index].name}:
                             ${
                               cartItem.product.attributes[index].items[
                                 cartItem.selectedAttributes[index].item
                               ].displayValue
                             }`}
-                          </div>
                         </div>
-                      );
-                    })}
-                  </div>
-                  <div className="quantity">
-                    <img
-                      onClick={() => {
-                        this.props.incrementCartItem(index);
-                        this.calculateTotal();
-                      }}
-                      src={plusImg}
-                      alt=""
-                    />
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="quantity">
+                  <img
+                    onClick={() => {
+                      incrementCartItem(index);
+                      this.calculateTotal();
+                    }}
+                    src={plusImg}
+                    alt=""
+                  />
 
-                    {cartItem.quantity}
-                    <img
-                      onClick={() => {
-                        this.props.decrementCartItem(index);
-                        setTimeout(() => {
-                          this.calculateTotal();
-                        });
-                      }}
-                      src={minusImg}
-                      alt=""
-                    />
-                  </div>
-                  <figure>
-                    <div
-                      className="image"
-                      style={{
-                        backgroundImage: `url(${cartItem.product.gallery[0]})`,
-                      }}
-                    ></div>
-                  </figure>
+                  {cartItem.quantity}
+                  <img
+                    onClick={() => {
+                      decrementCartItem(index);
+                      setTimeout(() => {
+                        this.calculateTotal();
+                      });
+                    }}
+                    src={minusImg}
+                    alt=""
+                  />
                 </div>
-              ))}
-              {this.props.cart.cartItems.length > 0 && (
-                <div className="total">
-                  <p>Total</p>
-                  <p>{this.state.total}</p>
-                </div>
-              )}
-              <div className="buttons">
-                <Link to="/cart">
-                  <button className="bag">VIEW BAG</button>
-                </Link>
-                <button className="check-out">CHECK OUT</button>
+                <figure>
+                  <div
+                    className="image"
+                    style={{
+                      backgroundImage: `url(${cartItem.product.gallery[0]})`,
+                    }}
+                  />
+                </figure>
               </div>
-            </Container>
-          </>
+            ))}
+            {cart.cartItems.length > 0 && (
+              <div className="total">
+                <p>Total</p>
+                <p>{total}</p>
+              </div>
+            )}
+            <div className="buttons">
+              <Link to="/cart">
+                <button type="button" className="bag">
+                  VIEW BAG
+                </button>
+              </Link>
+              <button type="button" className="check-out">
+                CHECK OUT
+              </button>
+            </div>
+          </Container>
         )}
       </div>
     );

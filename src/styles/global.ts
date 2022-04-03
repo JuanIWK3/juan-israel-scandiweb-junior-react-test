@@ -1,4 +1,5 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components';
+
 export default createGlobalStyle`
 * {
   margin: 0;
@@ -22,6 +23,4 @@ a {
   align-items: center;
   justify-content: center;
 }
-
-
  `;

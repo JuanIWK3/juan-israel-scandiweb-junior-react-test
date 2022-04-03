@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { emptyCartImg, minusImg, plusImg } from '../../assets';
 import { CartItem } from '../../interfaces';
 import Header from '../../components/Header';
 
 import { Container } from './styles';
-import { connect } from 'react-redux';
 import {
   mapDispatchToProps,
   mapStateToProps,
 } from '../../state/actions/actions';
+
+interface myState {
+  overlayVisible: boolean;
+}
 
 class Cart extends Component<{
   currencyIndex: number;
@@ -16,7 +20,7 @@ class Cart extends Component<{
   incrementCartItem: (index: number) => void;
   decrementCartItem: (index: number) => void;
 }> {
-  state = {
+  state: myState = {
     overlayVisible: false,
   };
 
@@ -29,13 +33,15 @@ class Cart extends Component<{
   };
 
   toggleCartOverlay = () => {
-    this.setState({ overlayVisible: !this.state.overlayVisible });
+    this.setState((prevState: myState) => ({
+      overlayVisible: !prevState.overlayVisible,
+    }));
   };
 
   render() {
     return (
       <>
-        <Header toggle={this.toggleCartOverlay as () => {}} />
+        <Header toggle={this.toggleCartOverlay} />
         <Container>
           <div className="title">
             <p>Cart</p>
@@ -43,9 +49,9 @@ class Cart extends Component<{
           {!this.props.cart.cartItems.length && (
             <img src={emptyCartImg} alt="empty cart" />
           )}
-          {this.props.cart.cartItems.map((cartItem, index) => (
-            <div className="cart-item-wrapper" key={index}>
-              <div className="divider"></div>
+          {this.props.cart.cartItems.map((cartItem, itemIndex) => (
+            <div className="cart-item-wrapper" key={itemIndex}>
+              <div className="divider" />
               <div className="cart-item" key={cartItem.product.id}>
                 <div className="content">
                   <p className="brand">{cartItem.product.brand}</p>
@@ -57,16 +63,16 @@ class Cart extends Component<{
                     }
                     {cartItem.product.prices[this.props.currencyIndex].amount}
                   </p>
-                  {cartItem.product.attributes.map((attribute, index) => {
+                  {cartItem.product.attributes.map((attribute, attrIndex) => {
                     return (
                       <div className="attr" key={attribute.id}>
                         <div className="attr-name">
-                          {cartItem.product.attributes[index].name}:
+                          {cartItem.product.attributes[attrIndex].name}:
                         </div>
                         <div className="attr-value">
                           {
-                            cartItem.product.attributes[index].items[
-                              cartItem.selectedAttributes[index].item
+                            cartItem.product.attributes[attrIndex].items[
+                              cartItem.selectedAttributes[attrIndex].item
                             ].displayValue
                           }
                         </div>
@@ -78,7 +84,7 @@ class Cart extends Component<{
                   <div className="quantity">
                     <img
                       onClick={() => {
-                        this.increment(index);
+                        this.increment(itemIndex);
                       }}
                       src={plusImg}
                       alt=""
@@ -86,7 +92,7 @@ class Cart extends Component<{
                     <p>{cartItem.quantity}</p>
                     <img
                       onClick={() => {
-                        this.decrement(index);
+                        this.decrement(itemIndex);
                       }}
                       src={minusImg}
                       alt=""
@@ -98,7 +104,7 @@ class Cart extends Component<{
                       style={{
                         backgroundImage: `url(${cartItem.product.gallery[0]})`,
                       }}
-                    ></div>
+                    />
                   </figure>
                 </div>
               </div>

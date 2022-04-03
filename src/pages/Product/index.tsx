@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Header from '../../components/Header';
@@ -9,28 +10,27 @@ import {
 } from '../../state/actions/actions';
 import { AttrButton, Container } from './styles';
 
+interface MyState {
+  loading: boolean;
+  error: boolean;
+  product: Product;
+  overlayVisible: boolean;
+  selectedImage: number;
+  selectedAttributes: SelectedAttribute[];
+}
+
 class ProductPage extends Component<{
   currencyIndex: number;
   cart: { cartItems: CartItem[] };
   addCartItem: (product: Product, attributes?: SelectedAttribute[]) => void;
 }> {
-  state = {
+  state: MyState = {
     loading: true,
     error: false,
     product: {} as Product,
     overlayVisible: false,
     selectedImage: 0,
-    selectedAttributes: [] as SelectedAttribute[],
-  };
-
-  changeSelectedAttr = (attr: number, item: number) => {
-    const selectedAttributes = this.state.selectedAttributes;
-    selectedAttributes[attr].item = item;
-    this.setState({ selectedAttributes });
-  };
-
-  toggleCartOverlay = () => {
-    this.setState({ overlayVisible: !this.state.overlayVisible });
+    selectedAttributes: [],
   };
 
   componentDidMount() {
@@ -46,7 +46,7 @@ class ProductPage extends Component<{
 
         const defaultAttr = (product: Product) => {
           const selectedAttributes: SelectedAttribute[] = [];
-          for (let i = 0; i < product.attributes.length; i++) {
+          for (let i = 0; i < product.attributes.length; i += 1) {
             selectedAttributes.push({
               attribute: 0,
               item: 0,
@@ -58,8 +58,12 @@ class ProductPage extends Component<{
         //* Before Loading */
 
         this.setState({ product: response.data.product as Product });
-        this.setState({ selectedAttributes: defaultAttr(this.state.product) });
-        this.setState({ selectedImage: this.state.product.gallery[0] });
+        this.setState((prevState: MyState) => ({
+          selectedAttributes: defaultAttr(prevState.product),
+        }));
+        this.setState((prevState: MyState) => ({
+          selectedImage: prevState.product.gallery[0],
+        }));
 
         //* === */
 
@@ -75,121 +79,134 @@ class ProductPage extends Component<{
     getProductData();
   }
 
+  changeSelectedAttr = (attr: number, item: number) => {
+    const { selectedAttributes } = this.state;
+    selectedAttributes[attr].item = item;
+    this.setState({ selectedAttributes });
+  };
+
+  toggleCartOverlay = () => {
+    this.setState((prevState: MyState) => ({
+      overlayVisible: !prevState.overlayVisible,
+    }));
+  };
+
   render() {
     if (this.state.loading) {
       return <Container>Loading...</Container>;
-    } else if (this.state.error) {
-      return <Container>Loading Error</Container>;
-    } else {
-      return (
-        <>
-          <Header toggle={this.toggleCartOverlay as () => {}} />
-          <Container>
-            {this.state.overlayVisible && <div className="dim-overlay"></div>}
-            <main>
-              <div className="gallery">
-                <div className="images-list">
-                  {this.state.product.gallery.map((image, index) => {
-                    return (
-                      <figure key={index}>
-                        <div
-                          onClick={() => {
-                            this.setState({ selectedImage: image });
-                          }}
-                          className="image"
-                          style={{ backgroundImage: `url(${image})` }}
-                        />
-                      </figure>
-                    );
-                  })}
-                </div>
-                <div
-                  className="selected-image"
-                  style={{
-                    backgroundImage: `url(${this.state.selectedImage})`,
-                  }}
-                />
-              </div>
-              <div className="content">
-                <div className="brand">{this.state.product.brand}</div>
-                <div className="name">{this.state.product.name}</div>
-                <div className="options">
-                  {this.state.product.attributes.map((attribute, attrIndex) => {
-                    return (
-                      <div
-                        key={attribute.name}
-                        className={'attr ' + attribute.type}
-                      >
-                        <div className="attr-name">
-                          <p>{attribute.name}</p>
-
-                          <p className="selected-value">
-                            {' '}
-                            {`: ${
-                              attribute.items[
-                                this.state.selectedAttributes[attrIndex].item
-                              ].displayValue
-                            }`}
-                          </p>
-                        </div>
-                        <div className="attr-values">
-                          {attribute.items.map((item, itemIndex) => {
-                            return (
-                              <AttrButton
-                                attrColor={item.value}
-                                key={itemIndex}
-                                onClick={() => {
-                                  this.changeSelectedAttr(attrIndex, itemIndex);
-                                }}
-                                className={
-                                  attribute.type === 'swatch'
-                                    ? 'attr-value swatch'
-                                    : 'attr-value'
-                                }
-                              >
-                                {attribute.type !== 'swatch' && (
-                                  <div>{item.value}</div>
-                                )}
-                              </AttrButton>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-                <div className="price-wrapper">
-                  <div className="price">PRICE:</div>
-                  <div className="amount">
-                    {
-                      this.state.product.prices[this.props.currencyIndex]
-                        .currency.symbol
-                    }{' '}
-                    {this.state.product.prices[this.props.currencyIndex].amount}
-                  </div>
-                </div>
-                <button
-                  onClick={() => {
-                    this.props.addCartItem(
-                      this.state.product,
-                      this.state.selectedAttributes
-                    );
-                  }}
-                  className={
-                    this.state.product.inStock
-                      ? 'add-to-cart'
-                      : 'add-to-cart out-of-stock'
-                  }
-                >
-                  {this.state.product.inStock ? 'Add to Cart' : 'OUT OF STOCK'}
-                </button>
-                <div className="description"></div>
-              </div>
-            </main>
-          </Container>
-        </>
-      );
     }
+    if (this.state.error) {
+      return <Container>Loading Error</Container>;
+    }
+    return (
+      <>
+        <Header toggle={this.toggleCartOverlay} />
+        <Container>
+          {this.state.overlayVisible && <div className="dim-overlay" />}
+          <main>
+            <div className="gallery">
+              <div className="images-list">
+                {this.state.product.gallery.map((image, index) => {
+                  return (
+                    <figure key={index}>
+                      <div
+                        onClick={() => {
+                          this.setState({ selectedImage: image });
+                        }}
+                        className="image"
+                        style={{ backgroundImage: `url(${image})` }}
+                      />
+                    </figure>
+                  );
+                })}
+              </div>
+              <div
+                className="selected-image"
+                style={{
+                  backgroundImage: `url(${this.state.selectedImage})`,
+                }}
+              />
+            </div>
+            <div className="content">
+              <div className="brand">{this.state.product.brand}</div>
+              <div className="name">{this.state.product.name}</div>
+              <div className="options">
+                {this.state.product.attributes.map((attribute, attrIndex) => {
+                  return (
+                    <div
+                      key={attribute.name}
+                      className={`attr ${attribute.type}`}
+                    >
+                      <div className="attr-name">
+                        <p>{attribute.name}</p>
+
+                        <p className="selected-value">
+                          {' '}
+                          {`: ${
+                            attribute.items[
+                              this.state.selectedAttributes[attrIndex].item
+                            ].displayValue
+                          }`}
+                        </p>
+                      </div>
+                      <div className="attr-values">
+                        {attribute.items.map((item, itemIndex) => {
+                          return (
+                            <AttrButton
+                              attrColor={item.value}
+                              key={itemIndex}
+                              onClick={() => {
+                                this.changeSelectedAttr(attrIndex, itemIndex);
+                              }}
+                              className={
+                                attribute.type === 'swatch'
+                                  ? 'attr-value swatch'
+                                  : 'attr-value'
+                              }
+                            >
+                              {attribute.type !== 'swatch' && (
+                                <div>{item.value}</div>
+                              )}
+                            </AttrButton>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="price-wrapper">
+                <div className="price">PRICE:</div>
+                <div className="amount">
+                  {
+                    this.state.product.prices[this.props.currencyIndex].currency
+                      .symbol
+                  }{' '}
+                  {this.state.product.prices[this.props.currencyIndex].amount}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  this.props.addCartItem(
+                    this.state.product,
+                    this.state.selectedAttributes,
+                  );
+                }}
+                className={
+                  this.state.product.inStock
+                    ? 'add-to-cart'
+                    : 'add-to-cart out-of-stock'
+                }
+              >
+                {this.state.product.inStock ? 'Add to Cart' : 'OUT OF STOCK'}
+              </button>
+              <div className="description" />
+            </div>
+          </main>
+        </Container>
+      </>
+    );
   }
 }
 
