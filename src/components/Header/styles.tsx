@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Container = styled.div`
   width: 100%;
@@ -89,7 +89,7 @@ export const Container = styled.div`
       padding: 0 16px;
       background: transparent;
       border: none;
-      font-family: "Raleway", serif;
+      font-family: 'Raleway', serif;
       font-size: 16px;
       cursor: pointer;
       &.active {

@@ -1,27 +1,21 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-import { cartLightImg } from "../../assets";
+import { cartLightImg } from '../../assets';
 
-import Header from "../../components/Header";
+import Header from '../../components/Header';
 
-import {
-  Product,
-  CartItem,
-  CategoryElement,
-  Attribute,
-  SelectedAttribute,
-} from "../../interfaces";
+import { Product, CartItem, CategoryElement } from '../../interfaces';
 
-import { ALL_ITEMS_QUERY, CATEGORY_QUERY, client } from "../../queries";
+import { ALL_ITEMS_QUERY, client } from '../../queries';
 
 import {
   mapDispatchToProps,
   mapStateToProps,
-} from "../../state/actions/actions";
+} from '../../state/actions/actions';
 
-import { Container } from "./styles";
+import { Container } from './styles';
 
 class Category extends Component<{
   currencyIndex: number;
@@ -88,7 +82,7 @@ class Category extends Component<{
                   return (
                     <div className="product" key={product.id}>
                       <figure
-                        className={!product.inStock ? "out-of-stock" : ""}
+                        className={!product.inStock ? 'out-of-stock' : ''}
                       >
                         {!product.inStock && (
                           <Link to={`/products/${product.id}`}>

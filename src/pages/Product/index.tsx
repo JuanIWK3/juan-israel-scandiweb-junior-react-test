@@ -1,13 +1,13 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import Header from "../../components/Header";
-import { CartItem, Product, SelectedAttribute } from "../../interfaces";
-import { client, PRODUCT_QUERY } from "../../queries";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import Header from '../../components/Header';
+import { CartItem, Product, SelectedAttribute } from '../../interfaces';
+import { client, PRODUCT_QUERY } from '../../queries';
 import {
   mapDispatchToProps,
   mapStateToProps,
-} from "../../state/actions/actions";
-import { AttrButton, Container } from "./styles";
+} from '../../state/actions/actions';
+import { AttrButton, Container } from './styles';
 
 class ProductPage extends Component<{
   currencyIndex: number;
@@ -35,7 +35,7 @@ class ProductPage extends Component<{
 
   componentDidMount() {
     const getProductData = async () => {
-      const params = window.location.pathname.split("/")[2];
+      const params = window.location.pathname.split('/')[2];
       try {
         const response = await client.query({
           query: PRODUCT_QUERY,
@@ -64,7 +64,7 @@ class ProductPage extends Component<{
         //* === */
 
         this.setState({ loading: response.loading });
-        const description = document.querySelector(".description");
+        const description = document.querySelector('.description');
         if (description) {
           description.innerHTML = this.state.product.description;
         }
@@ -118,13 +118,13 @@ class ProductPage extends Component<{
                     return (
                       <div
                         key={attribute.name}
-                        className={"attr " + attribute.type}
+                        className={'attr ' + attribute.type}
                       >
                         <div className="attr-name">
                           <p>{attribute.name}</p>
 
                           <p className="selected-value">
-                            {" "}
+                            {' '}
                             {`: ${
                               attribute.items[
                                 this.state.selectedAttributes[attrIndex].item
@@ -142,12 +142,12 @@ class ProductPage extends Component<{
                                   this.changeSelectedAttr(attrIndex, itemIndex);
                                 }}
                                 className={
-                                  attribute.type == "swatch"
-                                    ? "attr-value swatch"
-                                    : "attr-value"
+                                  attribute.type === 'swatch'
+                                    ? 'attr-value swatch'
+                                    : 'attr-value'
                                 }
                               >
-                                {attribute.type !== "swatch" && (
+                                {attribute.type !== 'swatch' && (
                                   <div>{item.value}</div>
                                 )}
                               </AttrButton>
@@ -164,7 +164,7 @@ class ProductPage extends Component<{
                     {
                       this.state.product.prices[this.props.currencyIndex]
                         .currency.symbol
-                    }{" "}
+                    }{' '}
                     {this.state.product.prices[this.props.currencyIndex].amount}
                   </div>
                 </div>
@@ -177,11 +177,11 @@ class ProductPage extends Component<{
                   }}
                   className={
                     this.state.product.inStock
-                      ? "add-to-cart"
-                      : "add-to-cart out-of-stock"
+                      ? 'add-to-cart'
+                      : 'add-to-cart out-of-stock'
                   }
                 >
-                  {this.state.product.inStock ? "Add to Cart" : "OUT OF STOCK"}
+                  {this.state.product.inStock ? 'Add to Cart' : 'OUT OF STOCK'}
                 </button>
                 <div className="description"></div>
               </div>

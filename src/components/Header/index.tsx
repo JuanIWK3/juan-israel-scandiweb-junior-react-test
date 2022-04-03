@@ -1,29 +1,22 @@
-import React, { Component } from "react";
-import {
-  Attribute,
-  CartItem,
-  CategoryElement,
-  Currency,
-  Product,
-} from "../../interfaces";
-import CartOverlay from "../CartOverlay";
+import React, { Component, PointerEvent } from 'react';
+import { CartItem, CategoryElement, Currency } from '../../interfaces';
+import CartOverlay from '../CartOverlay';
 
-import { Container } from "./styles";
+import { Container } from './styles';
 
 import {
   logoImg,
-  cartImg,
   currencyOpenImg,
   currencyCloseImg,
   hamImg,
-} from "../../assets";
-import { Link } from "react-router-dom";
-import { CATEGORY_QUERY, client, CURRENCY_QUERY } from "../../queries";
-import { connect } from "react-redux";
+} from '../../assets';
+import { Link } from 'react-router-dom';
+import { CATEGORY_QUERY, client, CURRENCY_QUERY } from '../../queries';
+import { connect } from 'react-redux';
 import {
   mapDispatchToProps,
   mapStateToProps,
-} from "../../state/actions/actions";
+} from '../../state/actions/actions';
 
 class index extends Component<{
   toggle: () => {};
@@ -33,9 +26,23 @@ class index extends Component<{
   changeCurrency: any;
   changeCategory: (index: number) => void;
 }> {
+  currencyItemRef = React.createRef<HTMLDivElement>();
+
+  handleClickOutside = (event: MouseEvent) => {
+    if (this.state.currencyMenuShow) {
+      if (
+        event.target !== this.currencyItemRef.current &&
+        event.target !== this.currencyItemRef.current?.parentElement
+      ) {
+        this.toggleCurrencyMenu();
+      }
+    }
+  };
+
   toggleCurrencyMenu = () => {
     this.setState({ currencyMenuShow: !this.state.currencyMenuShow });
   };
+
   toggleCategoryMenu = () => {
     this.setState({ showCategories: !this.state.showCategories });
   };
@@ -92,6 +99,12 @@ class index extends Component<{
     };
     getCategoryData();
     getCurrencyData();
+
+    document.addEventListener('mousedown', this.handleClickOutside);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.handleClickOutside);
   }
 
   selectFilter = (value: string) => {
@@ -116,7 +129,7 @@ class index extends Component<{
                     }}
                     key={index}
                     className={
-                      this.props.categoryIndex === index ? "active" : ""
+                      this.props.categoryIndex === index ? 'active' : ''
                     }
                   >
                     {category.name.charAt(0).toUpperCase() +
@@ -159,7 +172,9 @@ class index extends Component<{
             <div className="currency-cart">
               <div
                 className="currency-button"
-                onClick={this.toggleCurrencyMenu}
+                onClick={() => {
+                  this.toggleCurrencyMenu();
+                }}
               >
                 {this.state.currencies[this.props.currencyIndex].symbol}
                 {this.state.currencyMenuShow ? (
@@ -168,7 +183,7 @@ class index extends Component<{
                   <img src={currencyCloseImg} alt="" />
                 )}
                 {this.state.currencyMenuShow && (
-                  <div className="currency-menu">
+                  <div ref={this.currencyItemRef} className="currency-menu">
                     {this.state.currencies.map((currency, index) => {
                       return (
                         <div
@@ -176,7 +191,7 @@ class index extends Component<{
                             this.props.changeCurrency(index);
                           }}
                           className="currency"
-                          key={currency.symbol}
+                          key={index}
                         >
                           <p>{currency.symbol}</p>
                           <p>{currency.label}</p>

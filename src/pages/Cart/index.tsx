@@ -1,14 +1,14 @@
-import React, { Component } from "react";
-import { cartImg, emptyCartImg, minusImg, plusImg } from "../../assets";
-import { CartItem } from "../../interfaces";
-import Header from "../../components/Header";
+import React, { Component } from 'react';
+import { emptyCartImg, minusImg, plusImg } from '../../assets';
+import { CartItem } from '../../interfaces';
+import Header from '../../components/Header';
 
-import { Container } from "./styles";
-import { connect } from "react-redux";
+import { Container } from './styles';
+import { connect } from 'react-redux';
 import {
   mapDispatchToProps,
   mapStateToProps,
-} from "../../state/actions/actions";
+} from '../../state/actions/actions';
 
 class Cart extends Component<{
   currencyIndex: number;

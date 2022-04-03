@@ -1,13 +1,13 @@
-import React from "react";
-import Category from "./pages/Category";
+import React from 'react';
+import Category from './pages/Category';
 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import GlobalStyle from "./styles/global";
-import { CartItem } from "./interfaces";
-import Cart from "./pages/Cart";
-import { ApolloProvider } from "@apollo/client";
-import { client } from "./queries";
-import ProductPage from "./pages/Product";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import GlobalStyle from './styles/global';
+import { CartItem } from './interfaces';
+import Cart from './pages/Cart';
+import { ApolloProvider } from '@apollo/client';
+import { client } from './queries';
+import ProductPage from './pages/Product';
 
 class App extends React.Component {
   state = {
@@ -30,13 +30,13 @@ class App extends React.Component {
                 element={
                   <main
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: "100vh",
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      height: '100vh',
                     }}
                   >
-                    <p>There's nothing here!</p>
+                    <p>There&apos s nothing here!</p>
                   </main>
                 }
               />

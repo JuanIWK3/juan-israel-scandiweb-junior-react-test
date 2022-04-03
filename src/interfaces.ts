@@ -44,13 +44,13 @@ export interface Item {
 }
 
 export enum Type {
-  Swatch = "swatch",
-  Text = "text",
+  Swatch = 'swatch',
+  Text = 'text',
 }
 
 export enum CategoryEnum {
-  Clothes = "clothes",
-  Tech = "tech",
+  Clothes = 'clothes',
+  Tech = 'tech',
 }
 
 export interface Price {
@@ -59,22 +59,22 @@ export interface Price {
 }
 
 export interface Currency {
-  symbol: Symbol;
+  symbol: symbol;
   label: Label;
 }
 
 export enum Label {
-  Aud = "AUD",
-  Gbp = "GBP",
-  Jpy = "JPY",
-  Rub = "RUB",
-  Usd = "USD",
+  Aud = 'AUD',
+  Gbp = 'GBP',
+  Jpy = 'JPY',
+  Rub = 'RUB',
+  Usd = 'USD',
 }
 
 export enum Symbol {
-  A = "A$",
-  Empty = "$",
-  Fluffy = "₽",
-  Purple = "¥",
-  Symbol = "£",
+  A = 'A$',
+  Empty = '$',
+  Fluffy = '₽',
+  Purple = '¥',
+  Symbol = '£',
 }

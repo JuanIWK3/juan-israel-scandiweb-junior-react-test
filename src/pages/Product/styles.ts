@@ -1,4 +1,3 @@
-import { Attribute } from "./../../interfaces";
 import styled from "styled-components";
 
 export const Container = styled.div`

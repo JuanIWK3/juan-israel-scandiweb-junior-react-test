@@ -1,16 +1,16 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import { cartImg, minusImg, plusImg } from "../../assets";
-import { CartItem } from "../../interfaces";
+import React, { Component, createRef } from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { cartImg, minusImg, plusImg } from '../../assets';
+import { CartItem } from '../../interfaces';
 import {
   mapDispatchToProps,
   mapStateToProps,
-} from "../../state/actions/actions";
+} from '../../state/actions/actions';
 
-import { Badge, Container, Icon } from "./styles";
+import { Badge, Container, Icon } from './styles';
 
-class CartOverlay extends Component<{
+interface IProps {
   cart: { cartItems: CartItem[] };
   toggleDim: () => {};
   currencyOpen: boolean;
@@ -18,14 +18,27 @@ class CartOverlay extends Component<{
   currencyIndex: number;
   incrementCartItem: (index: number) => void;
   decrementCartItem: (index: number) => void;
-}> {
+}
+
+class CartOverlay extends Component<IProps> {
   state = {
-    total: "",
+    total: '',
     overlayVisible: false,
   };
 
+  cartRef = createRef<HTMLDivElement>();
+
+  handleClickOutside = (event: MouseEvent) => {
+    if (this.state.overlayVisible) {
+      if (event.target !== this.cartRef.current) {
+        this.toggleCartOverlay();
+        this.props.toggleDim();
+      }
+    }
+  };
+
   calculateTotal = () => {
-    this.setState({ total: "" });
+    this.setState({ total: '' });
 
     let sum = 0;
     if (!this.props.cart.cartItems || !this.props.cart.cartItems.length) {
@@ -38,11 +51,10 @@ class CartOverlay extends Component<{
           .amount * this.props.cart.cartItems[i].quantity;
     }
 
+    const symbol: string = this.props.cart.cartItems[0].product.prices[this.props.currencyIndex].currency.symbol.toString()
+    
     this.setState({
-      total: `${
-        this.props.cart.cartItems[0].product.prices[this.props.currencyIndex]
-          .currency.symbol
-      } ${sum.toFixed(2)}`,
+      total: `${symbol} ${sum.toFixed(2)}`,
     });
   };
 
@@ -60,6 +72,11 @@ class CartOverlay extends Component<{
 
   componentDidMount() {
     this.calculateTotal();
+    document.addEventListener('mousedown', this.handleClickOutside);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.handleClickOutside);
   }
 
   componentDidUpdate() {
@@ -71,13 +88,13 @@ class CartOverlay extends Component<{
 
   render() {
     return (
-      <div style={{ position: "relative" }}>
+      <div style={{ position: 'relative' }}>
         <Icon>
           <Badge>
             <div>{this.props.cart.cartItems.length}</div>
           </Badge>
           <img
-            style={{ cursor: "pointer", padding: "5px 11px", zIndex: 2 }}
+            style={{ cursor: 'pointer', padding: '5px 11px', zIndex: 2 }}
             onClick={() => {
               this.props.toggleDim();
               this.toggleCartOverlay();
@@ -88,10 +105,10 @@ class CartOverlay extends Component<{
         </Icon>
         {this.state.overlayVisible && (
           <>
-            <Container>
+            <Container ref={this.cartRef}>
               <p className="title">
-                <strong>My Bag</strong>, {this.props.cart.cartItems.length}{" "}
-                {this.props.cart.cartItems.length == 1 ? "item" : "items"}{" "}
+                <strong>My Bag</strong>, {this.props.cart.cartItems.length}{' '}
+                {this.props.cart.cartItems.length === 1 ? 'item' : 'items'}{' '}
               </p>
               {this.props.cart.cartItems.map((cartItem, index) => (
                 <div className="cart-item" key={index}>

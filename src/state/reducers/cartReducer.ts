@@ -1,4 +1,3 @@
-import { stat } from "fs/promises";
 import { CartItem, Product, SelectedAttribute } from "../../interfaces";
 import { Action, ActionType } from "../types";
 
@@ -16,8 +15,6 @@ export const cartReducer = (
 
     if (selectedAttrs) {
       for (let i = 0; i < product.attributes.length; i++) {
-        const attribute = product.attributes[i];
-
         selectedAttributes.push({
           attribute: selectedAttrs[i].attribute,
           item: selectedAttrs[i].item,
@@ -25,8 +22,6 @@ export const cartReducer = (
       }
     } else {
       for (let i = 0; i < product.attributes.length; i++) {
-        const attribute = product.attributes[i];
-
         selectedAttributes.push({
           attribute: 1,
           item: 1,
