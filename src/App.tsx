@@ -27,16 +27,9 @@ class App extends React.Component {
               <Route
                 path="*"
                 element={
-                  <main
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      height: '100vh',
-                    }}
-                  >
-                    <p>There &apos s nothing here!</p>
-                  </main>
+                  <div className="empty-page">
+                    <p>There is nothing here!</p>
+                  </div>
                 }
               />
             </Routes>

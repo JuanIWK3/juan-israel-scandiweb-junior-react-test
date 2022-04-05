@@ -1,10 +1,29 @@
 import styled from 'styled-components';
 
+export const OverlayContainer = styled.div`
+  position: relative;
+`;
+
+export const Image = styled.div`
+  height: 137px;
+  width: 105px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url(${(props: { image: string }) => props.image});
+`;
+
 export const Icon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   height: 40px;
+
+  img {
+    cursor: pointer;
+    padding: 5px 11px;
+    z-index: 2;
+  }
 `;
 
 export const Badge = styled.div`
@@ -94,17 +113,6 @@ export const Container = styled.div`
 
       img {
         cursor: pointer;
-      }
-    }
-    figure {
-      height: 137px;
-      width: 105px;
-      .image {
-        height: 137px;
-        width: 105px;
-        background-position: center;
-        background-size: contain;
-        background-repeat: no-repeat;
       }
     }
   }

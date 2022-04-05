@@ -1,5 +1,81 @@
 import styled from 'styled-components';
 
+export const ListImage = styled.div`
+  width: 40px;
+  height: 40px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url(${(props: { image: string }) => props.image});
+  cursor: pointer;
+`;
+
+export const SelectImage = styled.div`
+  width: 250px;
+  height: 204px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url(${(props: { image: string }) => props.image});
+
+  @media (min-width: 500px) {
+    width: 457px;
+    height: 382px;
+  }
+
+  @media (min-width: 1000px) {
+    width: 610px;
+    height: 510px;
+  }
+
+  @media (min-width: 1400px) {
+    margin-left: 120px;
+  }
+  @media (min-width: 1800px) {
+    width: 732px;
+    height: 612px;
+    margin-left: 250px;
+  }
+`;
+
+export const ImageList = styled.div`
+  display: flex;
+  flex-direction: row;
+  overflow: auto;
+  margin-bottom: 40px;
+
+  @media (min-width: 500px) {
+    width: max-content;
+
+    .image {
+      width: 60px;
+      height: 60px;
+    }
+  }
+
+  @media (min-width: 1000px) {
+    flex-direction: column;
+    max-height: 510px;
+    overflow: auto;
+    margin-bottom: 0;
+
+    &::-webkit-scrollbar {
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      display: none;
+    }
+    & {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+    }
+
+    .image {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 40px;
+    }
+  }
+`;
+
 export const Container = styled.div`
   padding: 80px;
   min-height: calc(100vh - 80px);
@@ -15,55 +91,11 @@ export const Container = styled.div`
     align-items: center;
     justify-content: space-between;
 
-    @media (min-width: 500px) {
-      .gallery {
-        .images-list {
-          width: max-content;
-
-          .image {
-            width: 60px;
-            height: 60px;
-          }
-        }
-
-        .selected-image {
-          width: 457px;
-          height: 382px;
-        }
-      }
-    }
-
     @media (min-width: 1000px) {
       flex-direction: row;
 
       .gallery {
         flex-direction: row;
-
-        .images-list {
-          flex-direction: column;
-          max-height: 510px;
-          overflow: auto;
-          margin-bottom: 0;
-
-          &::-webkit-scrollbar {
-            /* Hide scrollbar for Chrome, Safari and Opera */
-            display: none;
-          }
-          & {
-            -ms-overflow-style: none; /* IE and Edge */
-            scrollbar-width: none; /* Firefox */
-          }
-          .image {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 40px;
-          }
-        }
-
-        .selected-image {
-          width: 610px;
-          height: 510px;
-        }
       }
 
       .content {
@@ -78,21 +110,9 @@ export const Container = styled.div`
 
     @media (min-width: 1400px) {
       width: 1238px;
-      .gallery {
-        .selected-image {
-          margin-left: 100px;
-        }
-      }
     }
     @media (min-width: 1800px) {
       width: 1664px;
-      .gallery {
-        .selected-image {
-          width: 732px;
-          height: 612px;
-          margin-left: 250px;
-        }
-      }
     }
   }
 
@@ -101,32 +121,6 @@ export const Container = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
-    .images-list {
-      display: flex;
-      flex-direction: row;
-      overflow: auto;
-      margin-bottom: 40px;
-
-      .image {
-        width: 40px;
-        height: 40px;
-        background-position: center;
-        background-size: contain;
-        background-repeat: no-repeat;
-        cursor: pointer;
-      }
-    }
-    .selected-image {
-      width: 250px;
-      height: 204px;
-      background-position: center;
-      background-size: contain;
-      background-repeat: no-repeat;
-
-      @media (min-width: 1400px) {
-      }
-    }
   }
 
   .content {

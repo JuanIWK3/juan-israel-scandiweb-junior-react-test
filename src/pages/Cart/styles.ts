@@ -114,18 +114,19 @@ export const Container = styled.div`
     }
     figure {
       margin-left: 12px;
-
-      .image {
-        height: 185px;
-        width: 141px;
-        background-position: center;
-        background-size: contain;
-        background-repeat: no-repeat;
-      }
     }
   }
 
   .cart-item:last-child {
     margin-bottom: 0;
   }
+`;
+
+export const Image = styled.div`
+  height: 185px;
+  width: 141px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url(${(props: { image: string }) => props.image});
 `;

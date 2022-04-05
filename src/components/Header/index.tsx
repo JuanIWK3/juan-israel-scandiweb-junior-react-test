@@ -77,11 +77,9 @@ class index extends Component<{
 
   handleClickOutside = (event: MouseEvent) => {
     const { currencyMenuShow } = this.state;
+    const element = event.target as HTMLElement;
     if (currencyMenuShow) {
-      if (
-        event.target !== this.currencyItemRef.current &&
-        event.target !== this.currencyItemRef.current?.parentElement
-      ) {
+      if (!element.classList.contains('currency-el')) {
         this.toggleCurrencyMenu();
       }
     }
@@ -120,24 +118,25 @@ class index extends Component<{
     return (
       <Container>
         <div className="wrapper">
-          <div className="filters">
-            {categories.map((category, catIndex) => {
-              return (
-                <button
-                  type="button"
-                  onClick={() => {
-                    changeCategory(catIndex);
-                  }}
-                  key={catIndex}
-                  className={categoryIndex === catIndex ? 'active' : ''}
-                >
-                  {category.name.charAt(0).toUpperCase() +
-                    category.name.slice(1)}
-                </button>
-              );
-            })}
-          </div>
-
+          <Link to="/">
+            <div className="filters">
+              {categories.map((category, catIndex) => {
+                return (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      changeCategory(catIndex);
+                    }}
+                    key={catIndex}
+                    className={categoryIndex === catIndex ? 'active' : ''}
+                  >
+                    {category.name.charAt(0).toUpperCase() +
+                      category.name.slice(1)}
+                  </button>
+                );
+              })}
+            </div>
+          </Link>
           <button
             type="button"
             className="category-button"
@@ -175,30 +174,34 @@ class index extends Component<{
 
           <div className="currency-cart">
             <div
-              className="currency-button"
+              className="currency-button currency-el"
               onClick={() => {
                 this.toggleCurrencyMenu();
               }}
             >
               {currencies[currencyIndex].symbol}
               {currencyMenuShow ? (
-                <img src={currencyOpenImg} alt="" />
+                <img className="currency-el" src={currencyOpenImg} alt="" />
               ) : (
-                <img src={currencyCloseImg} alt="" />
+                <img className="currency-el" src={currencyCloseImg} alt="" />
               )}
               {currencyMenuShow && (
-                <div ref={this.currencyItemRef} className="currency-menu">
+                <div
+                  ref={this.currencyItemRef}
+                  className="currency-menu currency-el"
+                >
                   {currencies.map((currency, curIndex) => {
                     return (
                       <div
                         onClick={() => {
                           changeCurrency(curIndex);
+                          console.log('a');
                         }}
-                        className="currency"
+                        className="currency currency-el"
                         key={curIndex}
                       >
-                        <p>{currency.symbol}</p>
-                        <p>{currency.label}</p>
+                        <p className="currency-el">{currency.symbol}</p>
+                        <p className="currency-el">{currency.label}</p>
                       </div>
                     );
                   })}

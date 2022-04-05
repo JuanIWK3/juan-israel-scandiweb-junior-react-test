@@ -15,7 +15,7 @@ import {
   mapStateToProps,
 } from '../../state/actions/actions';
 
-import { Container } from './styles';
+import { Container, ProductImage } from './styles';
 
 interface MyState {
   loading: boolean;
@@ -96,8 +96,7 @@ class Category extends Component<{
                           <div className="out-of-stock">OUT OF STOCK</div>
                         </Link>
                       )}
-                      <button
-                        type="button"
+                      <div
                         className="circle"
                         onClick={() => {
                           if (product.inStock) {
@@ -106,14 +105,9 @@ class Category extends Component<{
                         }}
                       >
                         <img src={cartLightImg} alt="" />
-                      </button>
+                      </div>
                       <Link to={`/products/${product.id}`}>
-                        <div
-                          className="product-image"
-                          style={{
-                            backgroundImage: `url(${product.gallery[0]}`,
-                          }}
-                        />
+                        <ProductImage image={product.gallery[0]} />
                       </Link>
                     </figure>
                     <Link to={`/products/${product.id}`}>

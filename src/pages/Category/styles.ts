@@ -1,5 +1,14 @@
 import styled from 'styled-components';
 
+export const ProductImage = styled.div`
+  height: 338px;
+  width: 356px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url(${(props: { image: string }) => props.image});
+`;
+
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -90,14 +99,6 @@ export const Container = styled.div`
           color: #8d8f9a;
           font-size: 24px;
           cursor: pointer;
-        }
-
-        .product-image {
-          height: 338px;
-          width: 356px;
-          background-position: center;
-          background-size: contain;
-          background-repeat: no-repeat;
         }
 
         .circle {

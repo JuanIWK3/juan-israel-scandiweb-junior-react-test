@@ -4,7 +4,7 @@ import { emptyCartImg, minusImg, plusImg } from '../../assets';
 import { CartItem } from '../../interfaces';
 import Header from '../../components/Header';
 
-import { Container } from './styles';
+import { Container, Image } from './styles';
 import {
   mapDispatchToProps,
   mapStateToProps,
@@ -100,12 +100,7 @@ class Cart extends Component<{
                     />
                   </div>
                   <figure>
-                    <div
-                      className="image"
-                      style={{
-                        backgroundImage: `url(${cartItem.product.gallery[0]})`,
-                      }}
-                    />
+                    <Image image={cartItem.product.gallery[0]} />
                   </figure>
                 </div>
               </div>

@@ -32,4 +32,11 @@ a {
   height: 100%;
   z-index: 1;
 }
+
+.empty-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;               
+}
  `;

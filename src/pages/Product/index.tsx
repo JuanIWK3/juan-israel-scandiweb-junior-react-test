@@ -8,14 +8,20 @@ import {
   mapDispatchToProps,
   mapStateToProps,
 } from '../../state/actions/actions';
-import { AttrButton, Container } from './styles';
+import {
+  AttrButton,
+  Container,
+  ImageList,
+  ListImage,
+  SelectImage,
+} from './styles';
 
 interface MyState {
   loading: boolean;
   error: boolean;
   product: Product;
   overlayVisible: boolean;
-  selectedImage: number;
+  selectedImage: string;
   selectedAttributes: SelectedAttribute[];
 }
 
@@ -29,7 +35,7 @@ class ProductPage extends Component<{
     error: false,
     product: {} as Product,
     overlayVisible: false,
-    selectedImage: 0,
+    selectedImage: '',
     selectedAttributes: [],
   };
 
@@ -105,27 +111,20 @@ class ProductPage extends Component<{
           {this.state.overlayVisible && <div className="dim-overlay" />}
           <main>
             <div className="gallery">
-              <div className="images-list">
+              <ImageList>
                 {this.state.product.gallery.map((image, index) => {
                   return (
-                    <figure key={index}>
-                      <div
-                        onClick={() => {
-                          this.setState({ selectedImage: image });
-                        }}
-                        className="image"
-                        style={{ backgroundImage: `url(${image})` }}
-                      />
-                    </figure>
+                    <ListImage
+                      image={image}
+                      key={index}
+                      onClick={() => {
+                        this.setState({ selectedImage: image });
+                      }}
+                    />
                   );
                 })}
-              </div>
-              <div
-                className="selected-image"
-                style={{
-                  backgroundImage: `url(${this.state.selectedImage})`,
-                }}
-              />
+              </ImageList>
+              <SelectImage image={this.state.selectedImage} />
             </div>
             <div className="content">
               <div className="brand">{this.state.product.brand}</div>

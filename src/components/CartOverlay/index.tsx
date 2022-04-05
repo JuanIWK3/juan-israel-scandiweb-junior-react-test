@@ -8,7 +8,7 @@ import {
   mapStateToProps,
 } from '../../state/actions/actions';
 
-import { Badge, Container, Icon } from './styles';
+import { Badge, Container, Icon, Image, OverlayContainer } from './styles';
 
 interface IProps {
   cart: { cartItems: CartItem[] };
@@ -55,7 +55,6 @@ class CartOverlay extends Component<IProps> {
 
     if (overlayVisible) {
       if (!element.classList.contains('cart-element')) {
-        console.log(element.classList);
         this.toggleCartOverlay();
         toggleDim();
       }
@@ -109,15 +108,14 @@ class CartOverlay extends Component<IProps> {
     const { decrementCartItem } = this.props;
 
     return (
-      <div style={{ position: 'relative' }}>
+      <OverlayContainer>
         <Icon>
           <Badge>
             <div>{cart.cartItems.length}</div>
           </Badge>
           <img
-            className="cart-element"
+            className=" cart-element"
             ref={this.cartButtonRef}
-            style={{ cursor: 'pointer', padding: '5px 11px', zIndex: 2 }}
             onClick={() => {
               toggleDim();
               this.toggleCartOverlay();
@@ -127,7 +125,7 @@ class CartOverlay extends Component<IProps> {
           />
         </Icon>
         {overlayVisible && (
-          <Container ref={this.cartRef}>
+          <Container className="cart-element" ref={this.cartRef}>
             <p className="title cart-element">
               <strong className="cart-element">My Bag</strong>,{' '}
               {cart.cartItems.length}{' '}
@@ -184,11 +182,9 @@ class CartOverlay extends Component<IProps> {
                   />
                 </div>
                 <figure>
-                  <div
+                  <Image
+                    image={cartItem.product.gallery[0]}
                     className="image cart-element"
-                    style={{
-                      backgroundImage: `url(${cartItem.product.gallery[0]})`,
-                    }}
                   />
                 </figure>
               </div>
@@ -211,7 +207,7 @@ class CartOverlay extends Component<IProps> {
             </div>
           </Container>
         )}
-      </div>
+      </OverlayContainer>
     );
   }
 }
