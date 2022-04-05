@@ -23,15 +23,6 @@ export const Container = styled.div`
     font-weight: 400;
   }
 
-  .dim-overlay {
-    background: rgba(57, 55, 72, 0.22);
-    position: fixed;
-    top: 0px;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-  }
-
   .products {
     margin-top: 100px;
     display: grid;

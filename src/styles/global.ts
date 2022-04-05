@@ -23,4 +23,13 @@ a {
   align-items: center;
   justify-content: center;
 }
+
+.dim-overlay {
+  background: rgba(57, 55, 72, 0.22);
+  position: fixed;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
  `;

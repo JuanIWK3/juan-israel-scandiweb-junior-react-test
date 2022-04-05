@@ -14,7 +14,6 @@ interface IProps {
   cart: { cartItems: CartItem[] };
   toggleDim: () => void;
   currencyOpen: boolean;
-  toggleCurrencyMenu: () => void;
   currencyIndex: number;
   incrementCartItem: (index: number) => void;
   decrementCartItem: (index: number) => void;
@@ -22,6 +21,8 @@ interface IProps {
 
 class CartOverlay extends Component<IProps> {
   cartRef = createRef<HTMLDivElement>();
+
+  cartButtonRef = createRef<HTMLImageElement>();
 
   state = {
     total: '',
@@ -50,8 +51,11 @@ class CartOverlay extends Component<IProps> {
   handleClickOutside = (event: MouseEvent) => {
     const { overlayVisible } = this.state;
     const { toggleDim } = this.props;
+    const element = event.target as HTMLElement;
+
     if (overlayVisible) {
-      if (event.target !== this.cartRef.current) {
+      if (!element.classList.contains('cart-element')) {
+        console.log(element.classList);
         this.toggleCartOverlay();
         toggleDim();
       }
@@ -86,11 +90,7 @@ class CartOverlay extends Component<IProps> {
 
   toggleCartOverlay = () => {
     const { overlayVisible } = this.state;
-    const { currencyOpen } = this.props;
-    const { toggleCurrencyMenu } = this.props;
-    if (!overlayVisible && currencyOpen) {
-      toggleCurrencyMenu();
-    }
+
     if (!overlayVisible) {
       this.calculateTotal();
     }
@@ -115,6 +115,8 @@ class CartOverlay extends Component<IProps> {
             <div>{cart.cartItems.length}</div>
           </Badge>
           <img
+            className="cart-element"
+            ref={this.cartButtonRef}
             style={{ cursor: 'pointer', padding: '5px 11px', zIndex: 2 }}
             onClick={() => {
               toggleDim();
@@ -126,25 +128,26 @@ class CartOverlay extends Component<IProps> {
         </Icon>
         {overlayVisible && (
           <Container ref={this.cartRef}>
-            <p className="title">
-              <strong>My Bag</strong>, {cart.cartItems.length}{' '}
+            <p className="title cart-element">
+              <strong className="cart-element">My Bag</strong>,{' '}
+              {cart.cartItems.length}{' '}
               {cart.cartItems.length === 1 ? 'item' : 'items'}{' '}
             </p>
             {cart.cartItems.map((cartItem, index) => (
-              <div className="cart-item" key={index}>
-                <div className="content">
-                  <div className="brand-name">
+              <div className="cart-item cart-element" key={index}>
+                <div className="content cart-element">
+                  <div className="brand-name cart-element">
                     <p>{cartItem.product.brand}</p>
                     <p>{cartItem.product.name}</p>
                   </div>
-                  <p className="price">
+                  <p className="price cart-element">
                     {cartItem.product.prices[currencyIndex].currency.symbol}
                     {cartItem.product.prices[currencyIndex].amount}
                   </p>
                   {cartItem.product.attributes.map((attribute) => {
                     return (
-                      <div className="attr" key={attribute.id}>
-                        <div className="attr-name">
+                      <div className="attr cart-element" key={attribute.id}>
+                        <div className="attr-name cart-element">
                           {`${cartItem.product.attributes[index].name}:
                             ${
                               cartItem.product.attributes[index].items[
@@ -156,8 +159,9 @@ class CartOverlay extends Component<IProps> {
                     );
                   })}
                 </div>
-                <div className="quantity">
+                <div className="quantity cart-element">
                   <img
+                    className="cart-element"
                     onClick={() => {
                       incrementCartItem(index);
                       this.calculateTotal();
@@ -168,6 +172,7 @@ class CartOverlay extends Component<IProps> {
 
                   {cartItem.quantity}
                   <img
+                    className="cart-element"
                     onClick={() => {
                       decrementCartItem(index);
                       setTimeout(() => {
@@ -180,7 +185,7 @@ class CartOverlay extends Component<IProps> {
                 </div>
                 <figure>
                   <div
-                    className="image"
+                    className="image cart-element"
                     style={{
                       backgroundImage: `url(${cartItem.product.gallery[0]})`,
                     }}
@@ -189,18 +194,18 @@ class CartOverlay extends Component<IProps> {
               </div>
             ))}
             {cart.cartItems.length > 0 && (
-              <div className="total">
+              <div className="total cart-element">
                 <p>Total</p>
                 <p>{total}</p>
               </div>
             )}
-            <div className="buttons">
+            <div className="buttons cart-element">
               <Link to="/cart">
-                <button type="button" className="bag">
+                <button type="button" className="bag cart-element">
                   VIEW BAG
                 </button>
               </Link>
-              <button type="button" className="check-out">
+              <button type="button" className="check-out cart-element">
                 CHECK OUT
               </button>
             </div>

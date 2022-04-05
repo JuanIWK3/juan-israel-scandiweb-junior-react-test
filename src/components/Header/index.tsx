@@ -190,8 +190,7 @@ class index extends Component<{
                 <div ref={this.currencyItemRef} className="currency-menu">
                   {currencies.map((currency, curIndex) => {
                     return (
-                      <button
-                        type="button"
+                      <div
                         onClick={() => {
                           changeCurrency(curIndex);
                         }}
@@ -200,7 +199,7 @@ class index extends Component<{
                       >
                         <p>{currency.symbol}</p>
                         <p>{currency.label}</p>
-                      </button>
+                      </div>
                     );
                   })}
                 </div>
@@ -208,11 +207,7 @@ class index extends Component<{
             </div>
 
             <div className="cart">
-              <CartOverlay
-                currencyOpen={currencyMenuShow}
-                toggleCurrencyMenu={this.toggleCurrencyMenu}
-                toggleDim={toggle}
-              />
+              <CartOverlay currencyOpen={currencyMenuShow} toggleDim={toggle} />
             </div>
           </div>
         </div>

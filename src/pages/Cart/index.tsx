@@ -42,6 +42,7 @@ class Cart extends Component<{
     return (
       <>
         <Header toggle={this.toggleCartOverlay} />
+        {this.state.overlayVisible && <div className="dim-overlay" />}
         <Container>
           <div className="title">
             <p>Cart</p>
