@@ -20,8 +20,6 @@ interface IProps {
 }
 
 class CartOverlay extends Component<IProps> {
-  cartRef = createRef<HTMLDivElement>();
-
   cartButtonRef = createRef<HTMLImageElement>();
 
   state = {
@@ -125,7 +123,7 @@ class CartOverlay extends Component<IProps> {
           />
         </Icon>
         {overlayVisible && (
-          <Container className="cart-element" ref={this.cartRef}>
+          <Container className="cart-element">
             <p className="title cart-element">
               <strong className="cart-element">My Bag</strong>,{' '}
               {cart.cartItems.length}{' '}

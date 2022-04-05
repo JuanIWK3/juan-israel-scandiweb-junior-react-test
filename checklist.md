@@ -23,4 +23,4 @@ Code:
 - [x] Fix eslint.
 - [ ] Should fetch category products only when entering it. No need to fetch all at 1 time.
 - [x] Avoid inline styles. Can stay for swatch attributes
-- [ ] Avoid using document API to set description
+- [x] Avoid using document API to set description

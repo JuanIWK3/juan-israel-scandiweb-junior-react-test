@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { connect } from 'react-redux';
 import Header from '../../components/Header';
 import { CartItem, Product, SelectedAttribute } from '../../interfaces';
@@ -30,6 +30,8 @@ class ProductPage extends Component<{
   cart: { cartItems: CartItem[] };
   addCartItem: (product: Product, attributes?: SelectedAttribute[]) => void;
 }> {
+  descriptionRef = createRef<HTMLDivElement>();
+
   state: MyState = {
     loading: true,
     error: false,
@@ -71,13 +73,9 @@ class ProductPage extends Component<{
           selectedImage: prevState.product.gallery[0],
         }));
 
-        //* === */
+        //* After Loading */
 
         this.setState({ loading: response.loading });
-        const description = document.querySelector('.description');
-        if (description) {
-          description.innerHTML = this.state.product.description;
-        }
       } catch (error) {
         this.setState({ error: true });
       }
@@ -104,6 +102,13 @@ class ProductPage extends Component<{
     if (this.state.error) {
       return <Container>Loading Error</Container>;
     }
+
+    setTimeout(() => {
+      if (this.descriptionRef.current) {
+        this.descriptionRef.current.innerHTML = this.state.product.description;
+      }
+    });
+
     return (
       <>
         <Header toggle={this.toggleCartOverlay} />
@@ -200,7 +205,7 @@ class ProductPage extends Component<{
               >
                 {this.state.product.inStock ? 'Add to Cart' : 'OUT OF STOCK'}
               </button>
-              <div className="description" />
+              <div ref={this.descriptionRef} className="description" />
             </div>
           </main>
         </Container>
