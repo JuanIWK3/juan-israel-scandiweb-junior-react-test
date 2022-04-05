@@ -140,14 +140,14 @@ class CartOverlay extends Component<IProps> {
                     {cartItem.product.prices[currencyIndex].currency.symbol}
                     {cartItem.product.prices[currencyIndex].amount}
                   </p>
-                  {cartItem.product.attributes.map((attribute) => {
+                  {cartItem.product.attributes.map((attribute, attrIndex) => {
                     return (
                       <div className="attr cart-element" key={attribute.id}>
                         <div className="attr-name cart-element">
-                          {`${cartItem.product.attributes[index].name}:
+                          {`${cartItem.product.attributes[attrIndex].name}:
                             ${
-                              cartItem.product.attributes[index].items[
-                                cartItem.selectedAttributes[index].item
+                              cartItem.product.attributes[attrIndex].items[
+                                cartItem.selectedAttributes[attrIndex].item
                               ].displayValue
                             }`}
                         </div>
