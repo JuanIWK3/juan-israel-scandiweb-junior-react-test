@@ -24,6 +24,7 @@
     "prettier"
   ],
   "rules": {
+    "react/no-unused-state": "warn",
     "no-case-declarations": "off",
     "default-param-last": "off",
     "no-shadow": "off",

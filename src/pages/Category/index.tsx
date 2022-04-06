@@ -6,9 +6,9 @@ import { cartLightImg } from '../../assets';
 
 import Header from '../../components/Header';
 
-import { Product, CartItem, CategoryElement } from '../../interfaces';
+import { Product, CategoryElement } from '../../interfaces';
 
-import { ALL_ITEMS_QUERY, client } from '../../queries';
+import { CATEGORY_PRODUCTS_QUERY, CATEGORY_QUERY, client } from '../../queries';
 
 import {
   mapDispatchToProps,
@@ -20,42 +20,73 @@ import { Container, ProductImage } from './styles';
 interface MyState {
   loading: boolean;
   error: boolean;
-  categories: CategoryElement[];
+  category: CategoryElement;
   overlayVisible: boolean;
+  categoriesName: CategoryElement[];
 }
 
-class Category extends Component<{
+interface MyProps {
   currencyIndex: number;
   categoryIndex: number;
-
-  cart: { cartItems: CartItem[] };
   addCartItem: (product: Product) => void;
-}> {
+}
+
+class Category extends Component<MyProps> {
   state: MyState = {
     loading: true,
     error: false,
-    categories: [],
+    category: {} as CategoryElement,
     overlayVisible: false,
+    categoriesName: [],
   };
 
-  componentDidMount() {
-    const getProductData = async () => {
-      try {
-        const response = await client.query({
-          query: ALL_ITEMS_QUERY,
-        });
-
-        this.setState({
-          categories: response.data.categories as CategoryElement,
-        });
-
-        this.setState({ loading: response.loading });
-      } catch (error) {
-        this.setState({ error: true });
-      }
-    };
-    getProductData();
+  async componentDidMount() {
+    await this.getCategoriesData();
+    setTimeout(() => {
+      this.getCategoryProducts();
+    });
   }
+
+  componentDidUpdate(prevProps: MyProps) {
+    if (prevProps.categoryIndex !== this.props.categoryIndex) {
+      this.getCategoryProducts();
+    }
+  }
+
+  getCategoriesData = async () => {
+    try {
+      const response = await client.query({
+        query: CATEGORY_QUERY,
+      });
+
+      this.setState({
+        categoriesName: response.data.categories,
+      });
+    } catch (error) {
+      this.setState({ error: true });
+    }
+  };
+
+  getCategoryProducts = async () => {
+    const { categoriesName } = this.state;
+
+    try {
+      const response = await client.query({
+        query: CATEGORY_PRODUCTS_QUERY,
+        variables: {
+          input: { title: categoriesName[this.props.categoryIndex].name },
+        },
+      });
+
+      this.setState({
+        category: response.data.category as CategoryElement,
+      });
+
+      this.setState({ loading: response.loading });
+    } catch (error) {
+      this.setState({ error: true });
+    }
+  };
 
   toggleCartOverlay = () => {
     this.setState((prevState: MyState) => ({
@@ -75,59 +106,52 @@ class Category extends Component<{
         <Header toggle={this.toggleCartOverlay} />
         {this.state.overlayVisible && <div className="dim-overlay" />}
 
-        <div
-          className="category"
-          key={this.state.categories[this.props.categoryIndex].name}
-        >
+        <div className="category" key={this.state.category.name}>
           <h1 className="category-name">
-            {this.state.categories[this.props.categoryIndex].name
-              .charAt(0)
-              .toUpperCase() +
-              this.state.categories[this.props.categoryIndex].name.slice(1)}
+            {this.state.category.name.charAt(0).toUpperCase() +
+              this.state.category.name.slice(1)}
           </h1>
           <div className="products">
-            {this.state.categories[this.props.categoryIndex].products.map(
-              (product) => {
-                return (
-                  <div className="product" key={product.id}>
-                    <figure className={!product.inStock ? 'out-of-stock' : ''}>
-                      {!product.inStock && (
-                        <Link to={`/products/${product.id}`}>
-                          <div className="out-of-stock">OUT OF STOCK</div>
-                        </Link>
-                      )}
-                      <div
-                        className="circle"
-                        onClick={() => {
-                          if (product.inStock) {
-                            this.props.addCartItem(product);
-                          }
-                        }}
-                      >
-                        <img src={cartLightImg} alt="" />
-                      </div>
+            {this.state.category.products.map((product) => {
+              return (
+                <div className="product" key={product.id}>
+                  <figure className={!product.inStock ? 'out-of-stock' : ''}>
+                    {!product.inStock && (
                       <Link to={`/products/${product.id}`}>
-                        <ProductImage image={product.gallery[0]} />
+                        <div className="out-of-stock">OUT OF STOCK</div>
                       </Link>
-                    </figure>
+                    )}
+                    <div
+                      className="circle"
+                      onClick={() => {
+                        if (product.inStock) {
+                          this.props.addCartItem(product);
+                        }
+                      }}
+                    >
+                      <img src={cartLightImg} alt="" />
+                    </div>
                     <Link to={`/products/${product.id}`}>
-                      <div className="content">
-                        <p className="name">{`${product.brand} ${product.name}`}</p>
-                        {product.category}
-
-                        <p className="price">
-                          {
-                            product.prices[this.props.currencyIndex].currency
-                              .symbol
-                          }
-                          {product.prices[this.props.currencyIndex].amount}
-                        </p>
-                      </div>
+                      <ProductImage image={product.gallery[0]} />
                     </Link>
-                  </div>
-                );
-              },
-            )}
+                  </figure>
+                  <Link to={`/products/${product.id}`}>
+                    <div className="content">
+                      <p className="name">{`${product.brand} ${product.name}`}</p>
+                      {product.category}
+
+                      <p className="price">
+                        {
+                          product.prices[this.props.currencyIndex].currency
+                            .symbol
+                        }
+                        {product.prices[this.props.currencyIndex].amount}
+                      </p>
+                    </div>
+                  </Link>
+                </div>
+              );
+            })}
           </div>
         </div>
       </Container>

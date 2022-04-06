@@ -18,6 +18,40 @@ export const CATEGORY_QUERY = gql`
   }
 `;
 
+export const CATEGORY_PRODUCTS_QUERY = gql`
+  query Query($input: CategoryInput) {
+    category(input: $input) {
+      name
+      products {
+        name
+        id
+        inStock
+        gallery
+        description
+        category
+        attributes {
+          id
+          name
+          type
+          items {
+            displayValue
+            value
+            id
+          }
+        }
+        prices {
+          currency {
+            label
+            symbol
+          }
+          amount
+        }
+        brand
+      }
+    }
+  }
+`;
+
 export const ALL_ITEMS_QUERY = gql`
   query Query {
     categories {

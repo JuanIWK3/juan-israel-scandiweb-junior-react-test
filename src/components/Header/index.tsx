@@ -38,7 +38,7 @@ class index extends Component<{
   };
 
   componentDidMount() {
-    const getCategoryData = async () => {
+    const getCategoriesData = async () => {
       try {
         const response = await client.query({
           query: CATEGORY_QUERY,
@@ -65,7 +65,7 @@ class index extends Component<{
         this.setState({ error: true });
       }
     };
-    getCategoryData();
+    getCategoriesData();
     getCurrencyData();
 
     document.addEventListener('mousedown', this.handleClickOutside);
