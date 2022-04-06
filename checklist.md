@@ -16,7 +16,7 @@ Currency switcher:
 
 Cart page:
 
-- [ ] There should be arrows on images that functional as image switcher.
+- [x] There should be arrows on images that functional as image switcher.
 
 Code:
 

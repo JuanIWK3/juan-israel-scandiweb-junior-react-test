@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { emptyCartImg, minusImg, plusImg } from '../../assets';
+import {
+  arrowLeftImg,
+  arrowRightImg,
+  emptyCartImg,
+  minusImg,
+  plusImg,
+} from '../../assets';
 import { CartItem } from '../../interfaces';
 import Header from '../../components/Header';
 
@@ -12,6 +18,7 @@ import {
 
 interface myState {
   overlayVisible: boolean;
+  selectedImage: number;
 }
 
 class Cart extends Component<{
@@ -22,6 +29,7 @@ class Cart extends Component<{
 }> {
   state: myState = {
     overlayVisible: false,
+    selectedImage: 0,
   };
 
   increment = (index: number) => {
@@ -39,18 +47,22 @@ class Cart extends Component<{
   };
 
   render() {
+    const { selectedImage } = this.state;
+    const { overlayVisible } = this.state;
+    const { cart } = this.props;
+    const { currencyIndex } = this.props;
     return (
       <>
         <Header toggle={this.toggleCartOverlay} />
-        {this.state.overlayVisible && <div className="dim-overlay" />}
+        {overlayVisible && <div className="dim-overlay" />}
         <Container>
           <div className="title">
             <p>Cart</p>
           </div>
-          {!this.props.cart.cartItems.length && (
+          {!cart.cartItems.length && (
             <img src={emptyCartImg} alt="empty cart" />
           )}
-          {this.props.cart.cartItems.map((cartItem, itemIndex) => (
+          {cart.cartItems.map((cartItem, itemIndex) => (
             <div className="cart-item-wrapper" key={itemIndex}>
               <div className="divider" />
               <div className="cart-item" key={cartItem.product.id}>
@@ -58,11 +70,8 @@ class Cart extends Component<{
                   <p className="brand">{cartItem.product.brand}</p>
                   <p className="name">{cartItem.product.name}</p>
                   <p className="price">
-                    {
-                      cartItem.product.prices[this.props.currencyIndex].currency
-                        .symbol
-                    }
-                    {cartItem.product.prices[this.props.currencyIndex].amount}
+                    {cartItem.product.prices[currencyIndex].currency.symbol}
+                    {cartItem.product.prices[currencyIndex].amount}
                   </p>
                   {cartItem.product.attributes.map((attribute, attrIndex) => {
                     return (
@@ -99,9 +108,30 @@ class Cart extends Component<{
                       alt=""
                     />
                   </div>
-                  <figure>
-                    <Image image={cartItem.product.gallery[0]} />
-                  </figure>
+
+                  <Image image={cartItem.product.gallery[selectedImage]}>
+                    <div className="image" />
+                    <div
+                      className="left"
+                      onClick={() => {
+                        if (cartItem.product.gallery[selectedImage - 1]) {
+                          this.setState({ selectedImage: selectedImage - 1 });
+                        }
+                      }}
+                    >
+                      <img src={arrowLeftImg} alt="left" />
+                    </div>
+                    <div
+                      className="right"
+                      onClick={() => {
+                        if (cartItem.product.gallery[selectedImage + 1]) {
+                          this.setState({ selectedImage: selectedImage + 1 });
+                        }
+                      }}
+                    >
+                      <img src={arrowRightImg} alt="right" />
+                    </div>
+                  </Image>
                 </div>
               </div>
             </div>

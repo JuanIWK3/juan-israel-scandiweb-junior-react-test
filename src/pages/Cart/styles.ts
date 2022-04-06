@@ -1,5 +1,41 @@
 import styled from 'styled-components';
 
+export const Image = styled.div`
+  position: relative;
+  .image {
+    height: 185px;
+    width: 141px;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-image: url(${(props: { image: string }) => props.image});
+    margin: 0 8px;
+  }
+
+  .left {
+    left: 0;
+  }
+  .right {
+    right: 0;
+  }
+
+  .left,
+  .right {
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 4px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    img {
+      width: 12px;
+    }
+  }
+`;
+
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -99,6 +135,7 @@ export const Container = styled.div`
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
+      margin-right: 12px;
 
       p {
         font-family: Raleway;
@@ -112,21 +149,9 @@ export const Container = styled.div`
         cursor: pointer;
       }
     }
-    figure {
-      margin-left: 12px;
-    }
   }
 
   .cart-item:last-child {
     margin-bottom: 0;
   }
-`;
-
-export const Image = styled.div`
-  height: 185px;
-  width: 141px;
-  background-position: center;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-image: url(${(props: { image: string }) => props.image});
 `;
