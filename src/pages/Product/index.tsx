@@ -96,6 +96,8 @@ class ProductPage extends Component<{
   };
 
   render() {
+    const { selectedAttributes } = this.state;
+
     if (this.state.loading) {
       return <Container>Loading...</Container>;
     }
@@ -143,20 +145,17 @@ class ProductPage extends Component<{
                     >
                       <div className="attr-name">
                         <p>{attribute.name}</p>
-
-                        <p className="selected-value">
-                          {' '}
-                          {`: ${
-                            attribute.items[
-                              this.state.selectedAttributes[attrIndex].item
-                            ].displayValue
-                          }`}
-                        </p>
                       </div>
                       <div className="attr-values">
                         {attribute.items.map((item, itemIndex) => {
                           return (
                             <AttrButton
+                              selected={
+                                item.displayValue ===
+                                attribute.items[
+                                  selectedAttributes[attrIndex].item
+                                ].displayValue
+                              }
                               attrColor={item.value}
                               key={itemIndex}
                               onClick={() => {
@@ -168,6 +167,12 @@ class ProductPage extends Component<{
                                   : 'attr-value'
                               }
                             >
+                              {item.displayValue ===
+                                attribute.items[
+                                  selectedAttributes[attrIndex].item
+                                ].displayValue && (
+                                <div className="selected-border" />
+                              )}
                               {attribute.type !== 'swatch' && (
                                 <div>{item.value}</div>
                               )}

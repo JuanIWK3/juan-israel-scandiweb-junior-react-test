@@ -1,6 +1,6 @@
 Product page:
 
-- [ ] Selecting attribute should make it as per design hovered.
+- [x] Selecting attribute should make it as per design hovered.
 - [x] Can’t go to category on when on product page. (clicking on nav bar)
 
 Cart overlay:

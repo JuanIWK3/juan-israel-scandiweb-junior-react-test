@@ -4,6 +4,11 @@ export interface CartItem {
   selectedAttributes: SelectedAttribute[];
 }
 
+export interface AttrBtnProps {
+  attrColor: string;
+  selected: boolean;
+}
+
 export interface Data {
   categories: CategoryElement[];
 }

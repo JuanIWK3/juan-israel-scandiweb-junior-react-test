@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { AttrBtnProps } from '../../interfaces';
 
 export const ListImage = styled.div`
   width: 40px;
@@ -76,6 +77,47 @@ export const ImageList = styled.div`
   }
 `;
 
+export const AttrButton = styled.button`
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 63px;
+  height: 45px;
+  text-align: center;
+
+  margin-right: 12px;
+  margin-bottom: 12px;
+
+  border: 1px solid #ccc;
+  font-family: Source Sans Pro;
+  font-size: 16px;
+  cursor: pointer;
+  position: relative;
+
+  background: ${(props: AttrBtnProps) => props.selected && '#1D1F22'};
+  color: ${(props: AttrBtnProps) => props.selected && '#FFFFFF'};
+
+  &.swatch {
+    background: ${(props: AttrBtnProps) => props.attrColor};
+    width: ${(props: AttrBtnProps) => props.selected && '51px'};
+    height: ${(props: AttrBtnProps) => props.selected && '34px'};
+    margin: ${(props: AttrBtnProps) => props.selected && '5px 20px 18px 4px'};
+    .selected-border {
+      display: flex;
+    }
+  }
+
+  .selected-border {
+    display: none;
+    position: absolute;
+    width: 63px;
+    height: 45px;
+    border: 3px solid #555;
+    border-radius: 0.2rem;
+  }
+`;
+
 export const Container = styled.div`
   padding: 80px;
   min-height: calc(100vh - 80px);
@@ -148,19 +190,11 @@ export const Container = styled.div`
           font-family: Roboto;
           font-weight: 700;
           margin-bottom: 8px;
-
-          .selected-value {
-            font-weight: 400;
-          }
         }
 
         .attr-values {
           display: flex;
           flex-wrap: wrap;
-
-          .attr-value:last-child {
-            margin-bottom: 0;
-          }
         }
       }
     }
@@ -206,31 +240,5 @@ export const Container = styled.div`
       line-height: 25.59px;
       overflow: auto;
     }
-  }
-`;
-
-export const AttrButton = styled.button`
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 63px;
-  height: 45px;
-  text-align: center;
-
-  margin-right: 12px;
-  margin-bottom: 12px;
-
-  border: 1px solid #ccc;
-  font-family: Source Sans Pro;
-  font-size: 16px;
-  cursor: pointer;
-
-  &.selected {
-    border: 1px solid #111;
-  }
-
-  &.swatch {
-    background: ${(props: { attrColor: string }) => props.attrColor};
   }
 `;
