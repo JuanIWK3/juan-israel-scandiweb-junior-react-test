@@ -8,7 +8,14 @@ import {
   mapStateToProps,
 } from '../../state/actions/actions';
 
-import { Badge, Container, Icon, Image, OverlayContainer } from './styles';
+import {
+  AttrButton,
+  Badge,
+  Container,
+  Icon,
+  Image,
+  OverlayContainer,
+} from './styles';
 
 interface IProps {
   cart: { cartItems: CartItem[] };
@@ -142,15 +149,30 @@ class CartOverlay extends Component<IProps> {
                   </p>
                   {cartItem.product.attributes.map((attribute, attrIndex) => {
                     return (
-                      <div className="attr cart-element" key={attribute.id}>
-                        <div className="attr-name cart-element">
-                          {`${cartItem.product.attributes[attrIndex].name}:
-                            ${
-                              cartItem.product.attributes[attrIndex].items[
-                                cartItem.selectedAttributes[attrIndex].item
-                              ].displayValue
-                            }`}
+                      <div className="attr" key={attrIndex}>
+                        <div className="attr-name">
+                          {cartItem.product.attributes[attrIndex].name}:
                         </div>
+                        <AttrButton
+                          className={
+                            attribute.type === 'swatch' ? 'swatch' : ''
+                          }
+                          attrColor={
+                            cartItem.product.attributes[attrIndex].items[
+                              cartItem.selectedAttributes[attrIndex].item
+                            ].value
+                          }
+                        >
+                          {attribute.type !== 'swatch' && (
+                            <p>
+                              {
+                                cartItem.product.attributes[attrIndex].items[
+                                  cartItem.selectedAttributes[attrIndex].item
+                                ].displayValue
+                              }
+                            </p>
+                          )}
+                        </AttrButton>
                       </div>
                     );
                   })}

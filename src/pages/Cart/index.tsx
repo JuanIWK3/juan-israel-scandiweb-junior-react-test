@@ -10,7 +10,7 @@ import {
 import { CartItem } from '../../interfaces';
 import Header from '../../components/Header';
 
-import { Container, Image } from './styles';
+import { AttrButton, Container, Image } from './styles';
 import {
   mapDispatchToProps,
   mapStateToProps,
@@ -73,22 +73,37 @@ class Cart extends Component<{
                     {cartItem.product.prices[currencyIndex].currency.symbol}
                     {cartItem.product.prices[currencyIndex].amount}
                   </p>
-                  {cartItem.product.attributes.map((attribute, attrIndex) => {
-                    return (
-                      <div className="attr" key={attribute.id}>
-                        <div className="attr-name">
-                          {cartItem.product.attributes[attrIndex].name}:
+                  <div className="attributes">
+                    {cartItem.product.attributes.map((attribute, attrIndex) => {
+                      return (
+                        <div className="attr" key={attribute.id}>
+                          <div className="attr-name">
+                            {cartItem.product.attributes[attrIndex].name}:
+                          </div>
+                          <AttrButton
+                            className={
+                              attribute.type === 'swatch' ? 'swatch' : ''
+                            }
+                            attrColor={
+                              cartItem.product.attributes[attrIndex].items[
+                                cartItem.selectedAttributes[attrIndex].item
+                              ].value
+                            }
+                          >
+                            {attribute.type !== 'swatch' && (
+                              <p>
+                                {
+                                  cartItem.product.attributes[attrIndex].items[
+                                    cartItem.selectedAttributes[attrIndex].item
+                                  ].displayValue
+                                }
+                              </p>
+                            )}
+                          </AttrButton>
                         </div>
-                        <div className="attr-value">
-                          {
-                            cartItem.product.attributes[attrIndex].items[
-                              cartItem.selectedAttributes[attrIndex].item
-                            ].displayValue
-                          }
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
                 <div className="wrapper">
                   <div className="quantity">

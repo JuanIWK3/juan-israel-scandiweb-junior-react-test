@@ -1,5 +1,27 @@
 import styled from 'styled-components';
 
+export const AttrButton = styled.button`
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 51px;
+  height: 37px;
+  text-align: center;
+  margin-right: 12px;
+  margin-bottom: 12px;
+
+  border: 1px solid #ccc;
+  font-family: Source Sans Pro;
+  font-size: 16px;
+  cursor: pointer;
+  position: relative;
+
+  &.swatch {
+    background: ${(props: { attrColor: string }) => props.attrColor};
+  }
+`;
+
 export const Image = styled.div`
   position: relative;
   .image {
@@ -116,13 +138,20 @@ export const Container = styled.div`
         font-size: 24px;
         margin-bottom: 16px;
       }
-      .attr {
+      .attributes {
         display: flex;
-        margin-bottom: 4px;
-        .attr-name {
-          font-family: Roboto;
-          font-weight: 500;
-          margin-right: 8px;
+        flex-direction: column;
+        width: max-content;
+        .attr {
+          display: flex;
+          flex-direction: column;
+          margin-bottom: 4px;
+          .attr-name {
+            font-family: Roboto;
+            font-weight: 500;
+            margin-right: 8px;
+            margin-bottom: 4px;
+          }
         }
       }
     }

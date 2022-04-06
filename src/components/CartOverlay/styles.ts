@@ -4,6 +4,28 @@ export const OverlayContainer = styled.div`
   position: relative;
 `;
 
+export const AttrButton = styled.button`
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 51px;
+  height: 37px;
+  text-align: center;
+  margin-right: 12px;
+  margin-bottom: 12px;
+
+  border: 1px solid #ccc;
+  font-family: Source Sans Pro;
+  font-size: 16px;
+  cursor: pointer;
+  position: relative;
+
+  &.swatch {
+    background: ${(props: { attrColor: string }) => props.attrColor};
+  }
+`;
+
 export const Image = styled.div`
   height: 137px;
   width: 105px;
@@ -89,11 +111,13 @@ export const Container = styled.div`
       .brand-name {
         font-size: 16px;
         font-weight: 300;
+        margin-bottom: 12px;
       }
 
       .price {
         font-size: 16px;
         font-weight: 500;
+        margin-bottom: 12px;
       }
       .attr {
         font-size: 12px;

@@ -6,7 +6,7 @@ Product page:
 Cart overlay:
 
 - [x] Add max-height for cart items container, set overflow hidden and add scrollbar. If you adding a lot of products to cart, user is scrolling page a lot to see cart actions.
-- [ ] Show attributes as per design.
+- [x] Show attributes as per design.
 - [x] Background on page should not apply for header.
 - [x] Should close on outside click
 
